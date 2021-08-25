@@ -1,19 +1,13 @@
 export default function Header({ $target, text }) {
+  if (!this) throw new Error("Header 생성 시, new 입력하세요!");
+
   const $header = document.createElement("h1");
 
   $target.appendChild($header);
-  try {
-    this.constructor = () => {
-      this.$target = $target;
-      this.text = text;
-    };
 
-    this.render = () => {
-      $header.textContent = text;
-    };
+  this.render = () => {
+    $header.textContent = text;
+  };
 
-    this.render();
-  } catch (e) {
-    alert(e.message);
-  }
+  this.render();
 }
