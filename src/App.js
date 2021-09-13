@@ -38,7 +38,7 @@ export default function App({ $target }) {
     initialState: {
       isRoot: this.state.isRoot,
       nodes: this.state.nodes,
-      selectedImageUrl: undefined,
+      selectedImageUrl: null,
     },
     onClick: async (node) => {
       if (node.type === "DIRECTORY") {
@@ -75,7 +75,7 @@ export default function App({ $target }) {
   const imageViewer = new ImageViewer({
     $target,
     onClose: () => {
-      this.setState({ ...this.state, selectedImageUrl: undefined });
+      this.setState({ ...this.state, selectedImageUrl: null });
     },
   });
 
@@ -86,7 +86,7 @@ export default function App({ $target }) {
       nodes.setState({
         isRoot: this.state.isRoot,
         nodes: this.state.nodes,
-        selectedImageUrl: undefined,
+        selectedImageUrl: null,
       });
 
       imageViewer.setState({ selectedImageUrl: this.state.selectedImageUrl });
