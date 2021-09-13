@@ -3,7 +3,7 @@ export default function ImageViewer({ $target, onClose }) {
   $imageViewer.className = "ImageViewer Modal";
   $target.appendChild($imageViewer);
 
-  this.state = { selectedImageUrl: undefined };
+  this.state = { selectedImageUrl: null };
 
   this.setState = (nextState) => {
     try {
