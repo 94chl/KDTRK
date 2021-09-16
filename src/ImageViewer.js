@@ -11,7 +11,7 @@ export default function ImageViewer({ $target, onClose }) {
         throw new Error("이미지 데이터 포멧이 잘못되었습니다.");
       }
 
-      if (this.state !== nextState) {
+      if (JSON.stringify(this.state) !== JSON.stringify(nextState)) {
         this.state = nextState;
         this.render();
       }
