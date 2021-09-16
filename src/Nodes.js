@@ -13,7 +13,7 @@ export default function Nodes({ $target, initialState, onClick, onPrevClick }) {
         throw new Error("노드 데이터 포멧이 잘못되었습니다.");
       }
 
-      if (this.state !== nextState) {
+      if (JSON.stringify(this.state) !== JSON.stringify(nextState)) {
         this.state = { ...this.state, ...nextState };
         this.render();
       }
