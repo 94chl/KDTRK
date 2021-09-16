@@ -80,7 +80,7 @@ export default function App({ $target }) {
   });
 
   this.setState = (nextState) => {
-    if (this.state !== nextState) {
+    if (JSON.stringify(this.state) !== JSON.stringify(nextState)) {
       this.state = { ...this.state, ...nextState };
 
       nodes.setState({
