@@ -9,7 +9,7 @@ export default function Loading({ $target }) {
         throw new Error("로딩 중 오류가 발생했습니다.");
       }
 
-      if (this.state !== nextState) {
+      if (JSON.stringify(this.state) !== JSON.stringify(nextState)) {
         this.state = nextState;
         this.render();
       }
