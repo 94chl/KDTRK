@@ -67,9 +67,8 @@ header {
           &:first-child {
             background: #be7e00;
             font-weight: bold;
-            height: 50px;
+            height: 40px;
             margin-right: 5px;
-            display: block;
             border-radius: 10px;
           }
 
@@ -100,7 +99,7 @@ header {
         }
       }
       &:hover {
-        height: 230px;
+        height: 220px;
         ul {
           height: 210px;
         }
