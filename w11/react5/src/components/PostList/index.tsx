@@ -14,7 +14,7 @@ const PostList = () => {
     ) : (
       <ul>
         {data.map(post=>(
-          <PostItem key={post.id} post={post}>{post.title}</PostItem>
+          <PostItem key={post.id} post={post}></PostItem>
         ))}
       </ul>
     )}

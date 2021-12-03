@@ -1,18 +1,15 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { matches } from '@/dummy';
 import Match from "@/components/Match"
-//import { RootState } from '@/store';
+import { RootState } from '@/store';
 
-//import PostItem from '../PostItem';
-
-const PostList = () => {
-  // const {data} = useSelector((store: RootState)=> store.match)
+const MatchList = () => {
+  const {data} = useSelector((store: RootState)=> store.matches)
 
   return (
     <div>
       <ul>
-        {matches.map(match=>(
+        {data.map(match=>(
           <Match key={match.matchId} match={match}></Match>
         ))}
       </ul>    
@@ -20,4 +17,4 @@ const PostList = () => {
   );
 };
 
-export default PostList;
+export default MatchList;

@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import {Link} from "react-router-dom"
 import { useDispatch } from 'react-redux';
-import { Match } from '@/dummy';
+import { Match } from '@/store/match';
 
 interface Props {
   match: Match;
