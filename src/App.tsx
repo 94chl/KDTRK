@@ -1,7 +1,7 @@
 import React from 'react';
-import {Route, Switch} from "react-router";
-import { MatchesPage } from '@/pages';
-import DefaultTemplate from "@/components/DefaultTemplate"
+import { Route, Switch } from 'react-router';
+import { MatchesPage, MatchPage, SettingPage } from '@/pages';
+import DefaultTemplate from '@/components/DefaultTemplate';
 
 const App = () => {
   return (
@@ -11,7 +11,13 @@ const App = () => {
           <h1>Home</h1>
         </Route>
         <Route path="/matches" exact>
-          <MatchesPage/>
+          <MatchesPage />
+        </Route>
+        <Route path="/match/:matchId" exact>
+          <MatchPage />
+        </Route>
+        <Route path="/setting" exact>
+          <SettingPage />
         </Route>
       </Switch>
     </DefaultTemplate>

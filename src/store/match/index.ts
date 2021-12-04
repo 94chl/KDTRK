@@ -37,16 +37,6 @@ export const fetchAllMatch = createAsyncThunk('matches/fetchAllMatch', async () 
   return matchesDummy;
 });
 
-export const fetchMatchById = createAsyncThunk('matches/fetchMatchById', async (id: number) => {
-  // const { data } = await axios.get(`https://jsonplaceholder.typicode.com/matches/${id}`);
-  // return data;
-});
-
-export const deleteMatchById = createAsyncThunk(`matches/deleteMatchById`, async (id: number) => {
-  // await axios.delete(`https://jsonplaceholder.typicode.com/matches/${id}`);
-  // return { id };
-});
-
 export const matches = createSlice({
   name: 'matches',
   initialState: {
@@ -62,23 +52,6 @@ export const matches = createSlice({
     [fetchAllMatch.fulfilled.type]: (state: Matches, action: PayloadAction<Match[]>) => {
       state.data.push(...action.payload);
       //state.loading = false;
-    },
-    [fetchMatchById.fulfilled.type]: (state: Matches, action: PayloadAction<Match>) => {
-      const index = state.data.findIndex((match) => match.matchId === action.payload.matchId);
-      if (index === -1) {
-        state.data.push(action.payload);
-      } else {
-        state.data[index] = action.payload;
-      }
-    },
-    [deleteMatchById.fulfilled.type]: (
-      state: Matches,
-      action: PayloadAction<Pick<Match, 'matchId'>>
-    ) => {
-      const index = state.data.findIndex((match) => match.matchId === action.payload.matchId);
-      if (index !== -1) {
-        state.data.splice(index, 1);
-      }
     },
   },
 });

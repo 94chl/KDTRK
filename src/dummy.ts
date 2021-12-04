@@ -63,3 +63,35 @@ const match2: Match = {
 };
 
 export const matches: Match[] = [match, match2];
+
+export interface Team {
+  teamId: number;
+  teamName: string;
+  tagNames: string[];
+  captainId: number;
+  captainName: string;
+  ageGroup: string;
+  teamUsers: string[];
+}
+
+export const team: Team = {
+  teamId: 12,
+  teamName: 'FC 탐라',
+  tagNames: ['빠른 발', '히드라'],
+  captainId: 5,
+  captainName: '한라봉',
+  ageGroup: '40s',
+  teamUsers: ['한라봉', '호세', '사뮤엘'],
+};
+
+export const team2: Team = {
+  teamId: 15,
+  teamName: 'FC 과일바구니',
+  tagNames: ['스윗'],
+  captainId: 32,
+  captainName: '체리',
+  ageGroup: '30s',
+  teamUsers: ['한라봉', '오렌지', '체리'],
+};
+
+export const teams: Team[] = [team, team2];
