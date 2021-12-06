@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { MatchList } from '@/components/Match';
 import { fetchAllMatch } from '@/store/match';
 
-const MatchesPage = () => {
+const Matches = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -13,9 +13,9 @@ const MatchesPage = () => {
   return (
     <div>
       <h1>Matches</h1>
-      <MatchList></MatchList>
+      <MatchList />
     </div>
   );
 };
 
-export default MatchesPage;
+export default Matches;

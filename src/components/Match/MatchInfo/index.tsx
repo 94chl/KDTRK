@@ -1,8 +1,7 @@
-import React, { useCallback, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '@/store';
+import React from 'react';
 import classNames from 'classnames';
-import { Match } from '@/store/match';
+import { Match } from '@/dummy';
+import styles from './MatchInfo.module.scss';
 
 interface Props {
   match: Match;
@@ -10,37 +9,39 @@ interface Props {
 
 const MatchInfo = ({ match }: Props) => {
   return (
-    <div>
-      <div>
-        <h3>남은 시간</h3>
-        <h3>상태</h3>
-      </div>
-      <div>
-        <div>
-          <span>종목</span>
-          <span>{match.sports}</span>
+    <div className={classNames(styles.matchInfoCard)}>
+      <div className={classNames(styles.matchInfoRow)}>
+        <div className={classNames(styles.matchInfo, styles.notice)}>
+          <div className={classNames(styles.matchInfo_name)}>D-day</div>
+          <div className={classNames(styles.matchInfo_content)}>5</div>
         </div>
-        <div>
-          <span>상태</span>
-          <span>{match.status}</span>
-        </div>
-        <div>
-          <span>연령대</span>
-          <span>{match.ageGroup}</span>
-        </div>
-        <div>
-          <span>참가비</span>
-          <span>{match.cost}</span>
+        <div className={classNames(styles.matchInfo, styles.notice)}>
+          <div className={classNames(styles.matchInfo_name)}>상태</div>
+          <div className={classNames(styles.matchInfo_content)}>모집중</div>
         </div>
       </div>
-      <div className={classNames('important')}>
-        <div>
-          <span>날짜</span>
-          <span>{`${match.date} ${match.startTime}`}</span>
+      <div className={classNames(styles.matchInfoRow)}>
+        <div className={classNames(styles.matchInfo, styles.normal)}>
+          <div className={classNames(styles.matchInfo_name)}>연령대</div>
+          <div className={classNames(styles.matchInfo_content)}>{match.ageGroup}</div>
         </div>
-        <div>
-          <span>장소</span>
-          <span>{`${match.city} ${match.region} ${match.groundName}`}</span>
+        <div className={classNames(styles.matchInfo, styles.normal)}>
+          <div className={classNames(styles.matchInfo_name)}>참가비</div>
+          <div className={classNames(styles.matchInfo_content)}>{match.cost}</div>
+        </div>
+      </div>
+      <div className={classNames(styles.matchInfoRow)}>
+        <div className={classNames(styles.matchInfo, styles.important)}>
+          <div className={classNames(styles.matchInfo_name)}>날짜</div>
+          <div className={classNames(styles.matchInfo_content)}>
+            {`${match.date} ${match.startTime}`}
+          </div>
+        </div>
+        <div className={classNames(styles.matchInfo, styles.important)}>
+          <div className={classNames(styles.matchInfo_name)}>장소</div>
+          <div className={classNames(styles.matchInfo_content)}>
+            {`${match.city} ${match.region} ${match.groundName}`}
+          </div>
         </div>
       </div>
     </div>

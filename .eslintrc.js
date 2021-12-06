@@ -24,8 +24,9 @@ module.exports = {
       jsx: true,
     },
     ecmaVersion: 2021,
+    project: 'tsconfig.json',
+    tsconfigRootDir: __dirname,
     sourceType: 'module',
-    project: './tsconfig.json',
   },
   rules: {
     'import/prefer-default-export': 'off',

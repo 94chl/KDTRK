@@ -1,26 +1,40 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import classNames from 'classnames';
 import styles from './Header.module.scss';
 
 const Header = () => {
+  const history = useHistory();
+
   const handleGoBack = () => {
-    history.go(-1);
+    history.goBack();
   };
 
+  const {
+    header,
+    leftButtonBox,
+    rightButtonBox,
+    goBackButton,
+    goLoginPageButton,
+    goSettingPageButton,
+  } = styles;
+
   return (
-    <div className={classNames(styles.header)}>
-      <button onClick={handleGoBack}>back</button>
-      <h1>
-        <Link to={'/'}>logo</Link>
-      </h1>
-      <div className={classNames(styles.buttonBox)}>
-        <button>
-          {/* 로그인 상태 생기면 토글로 로그인/로그아웃 구분 */}
-          <Link to={'/login'}>login</Link>
+    <div className={classNames(header)}>
+      <div className={classNames(leftButtonBox)}>
+        <button type="button" onClick={handleGoBack} className={classNames(goBackButton)}>
+          <i className="far fa-chevronLeft" />
         </button>
-        <button>
-          <Link to={'/setting'}>setting</Link>
+      </div>
+      <div className={classNames(rightButtonBox)}>
+        <button type="button" className={classNames(goLoginPageButton)}>
+          {/* 로그인 상태 생기면 토글로 로그인/로그아웃 구분 */}
+          <Link to="/login">로그인</Link>
+        </button>
+        <button type="button" className={classNames(goSettingPageButton)}>
+          <Link to="/setting">
+            <i className="fas fa-cog" />
+          </Link>
         </button>
       </div>
     </div>

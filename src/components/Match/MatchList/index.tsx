@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { MatchCard } from '@/components/Match';
+import { MatchCard } from '@/components';
 import { RootState } from '@/store';
 
 const MatchList = () => {
@@ -9,8 +9,8 @@ const MatchList = () => {
   return (
     <div>
       <ul>
-        {data.map((match) => (
-          <MatchCard key={match.matchId} match={match}></MatchCard>
+        {data.matches.map((match) => (
+          <MatchCard key={match.matchId} match={match} />
         ))}
       </ul>
     </div>

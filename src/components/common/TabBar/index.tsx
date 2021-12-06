@@ -4,22 +4,27 @@ import classNames from 'classnames';
 import styles from './TabBar.module.scss';
 
 const TabBar = () => {
+  const { tabBar } = styles;
   return (
-    <div className={classNames(styles.tabBar)}>
+    <div className={classNames(tabBar)}>
       <nav>
-        <Link to={'/'}>홈</Link>
+        <Link to="/">
+          <i className="fas fa-home" />
+        </Link>
       </nav>
       <nav>
-        <Link to={'/matches'}>매칭</Link>
+        <Link to="/matches">매칭</Link>
       </nav>
       <nav>
-        <Link to={'/guest'}>용병</Link>
+        <Link to="/hires">용병</Link>
       </nav>
       <nav>
-        <Link to={'/team'}>팀</Link>
+        <Link to="/teams">팀</Link>
       </nav>
       <nav>
-        <Link to={'/me'}>개인</Link>
+        <Link to="/users">
+          <i className="fas fa-user" />
+        </Link>
       </nav>
     </div>
   );
