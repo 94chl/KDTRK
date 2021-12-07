@@ -4,6 +4,7 @@ import styles from './Input.module.scss';
 
 interface Props {
   name: string;
+  inputId: string;
   type: 'text' | 'dropbox';
   placeholder?: string;
   icon?: string;
@@ -22,17 +23,17 @@ const {
   inputButton,
 } = styles;
 
-const Input = ({ name, placeholder, type, icon, options, onChange }: Props) => {
+const Input = ({ name, inputId, placeholder, type, icon, options, onChange }: Props) => {
   return (
     <div className={classNames(inputBox)}>
       <div className={classNames(inputName)}>
-        <h3>{name}</h3>
+        <label htmlFor={inputId}>{name}</label>
       </div>
       <div className={classNames(inputContent)}>
         <form className={classNames(input)} onChange={onChange}>
           {type === 'text' && (
             <div className={classNames(input_text)}>
-              <input type="text" placeholder={placeholder && placeholder} />
+              <input id={inputId} type="text" placeholder={placeholder && placeholder} />
               {icon && (
                 <div className={classNames(inputButtonBox)}>
                   <button type="button" className={classNames(inputButton)}>
@@ -43,7 +44,7 @@ const Input = ({ name, placeholder, type, icon, options, onChange }: Props) => {
             </div>
           )}
           {type === 'dropbox' && (
-            <select name={name} className={classNames(input_dropBox)}>
+            <select id={inputId} name={name} className={classNames(input_dropBox)}>
               {options?.map((option, index) => (
                 <option value={option} key={`dropBoxOption${index}`}>
                   {option}

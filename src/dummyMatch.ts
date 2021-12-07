@@ -19,7 +19,6 @@ export interface Team {
 
 export interface Match {
   matchId: number;
-  position: string;
   city: string;
   region: string;
   groundName: string;
@@ -36,8 +35,8 @@ export interface Match {
   teamName?: string;
   teamMannerTemperature?: number;
   teamUsers?: TeamUser[];
-  // sports: string;
-  // status: string;
+  sports: string;
+  status: string;
   // isCancelled: boolean;
   // created_date: string;
   // modified_date: string;
@@ -46,13 +45,6 @@ export interface Match {
 export interface Matches {
   data: {
     matches: Omit<Match, 'homeTeam'>[];
-  };
-}
-
-export interface MatchTypes {
-  data: {
-    matches: Omit<Match, 'homeTeam'>[];
-    match: Match[];
   };
 }
 
@@ -65,7 +57,6 @@ export const matches: Matches = {
     matches: [
       {
         matchId: 1,
-        position: '윙백',
         city: '서울특별시',
         region: '광진구',
         groundName: '어린이대공원풋살장',
@@ -77,10 +68,11 @@ export const matches: Matches = {
         teamLogo: 's3://aasdfasd',
         teamName: '데브코스',
         teamMannerTemperature: 36.1,
+        sports: '축구',
+        status: '매칭전',
       },
       {
         matchId: 1,
-        position: '윙백',
         city: '서울특별시',
         region: '광진구',
         groundName: '어린이대공원풋살장',
@@ -92,6 +84,8 @@ export const matches: Matches = {
         teamLogo: 's3://aasdfasd',
         teamName: '데브코스',
         teamMannerTemperature: 36.1,
+        sports: '축구',
+        status: '매칭전',
       },
     ],
   },
@@ -100,7 +94,6 @@ export const matches: Matches = {
 export const match: MatchDetail = {
   data: {
     matchId: 1,
-    position: '윙백',
     city: '서울특별시',
     region: '광진구',
     groundName: '어린이대공원풋살장',
@@ -109,7 +102,9 @@ export const match: MatchDetail = {
     endTime: '12:30',
     cost: 30000,
     ageGroup: '20s',
+    sports: '축구',
     detail: '어르신들환영',
+    status: '매칭전',
     homeTeam: {
       teamId: 1,
       teamLogo: 's3://aasdfasd',
@@ -117,8 +112,8 @@ export const match: MatchDetail = {
       teamMannerTemperature: 36.1,
       teamUsers: [
         {
-          captainId: 1,
-          captainName: '쭝',
+          teamUserId: 1,
+          teamUserName: '쭝',
         },
         {
           teamUserId: 2,
@@ -149,8 +144,8 @@ export const match: MatchDetail = {
       teamMannerTemperature: 40.2,
       teamUsers: [
         {
-          captainId: 11,
-          captainName: '쫑쫑',
+          teamUserId: 11,
+          teamUserName: '쫑쫑',
         },
         {
           teamUserId: 12,
@@ -176,3 +171,58 @@ export const match: MatchDetail = {
     },
   },
 };
+
+export interface TeamSimple {
+  teamId: number;
+  teamName: string;
+  teamUsers: TeamUser[];
+}
+
+export interface TeamWithUser {
+  data: {
+    teams: TeamSimple[];
+  };
+}
+
+export const teamWithUser: TeamWithUser = {
+  data: {
+    teams: [
+      {
+        teamId: 1,
+        teamName: '데브코스',
+        teamUsers: [
+          {
+            teamUserId: 1,
+            teamUserName: '쭝',
+          },
+          {
+            teamUserId: 2,
+            teamUserName: '호세',
+          },
+        ],
+      },
+      {
+        teamId: 2,
+        teamName: '머쓱',
+        teamUsers: [
+          {
+            teamUserId: 11,
+            teamUserName: '쭝쭝',
+          },
+          {
+            teamUserId: 12,
+            teamUserName: '세호',
+          },
+        ],
+      },
+    ],
+  },
+};
+
+export interface MatchTypes {
+  data: {
+    matches: Omit<Match, 'homeTeam'>[];
+    match: Match[];
+    teamWithUser: TeamSimple[];
+  };
+}

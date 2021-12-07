@@ -2,14 +2,26 @@ import React from 'react';
 import classNames from 'classnames';
 import styles from './InputCheckBox.module.scss';
 
+interface Options {
+  [key: string]: boolean;
+}
 interface Props {
   name: string;
-  options?: string[];
+  options: Options;
   onChange: React.FormEventHandler<HTMLFormElement>;
 }
 
-const { inputBox, inputName, inputContent, input, input_checkBox, label, checkBox, checkBoxIcon } =
-  styles;
+const {
+  inputBox,
+  inputName,
+  inputContent,
+  input,
+  input_checkBox,
+  label,
+  checkBox,
+  checkBoxIcon,
+  selected,
+} = styles;
 
 const InputCheckBox = ({ name, options, onChange }: Props) => {
   return (
@@ -19,7 +31,7 @@ const InputCheckBox = ({ name, options, onChange }: Props) => {
       </div>
       <div className={classNames(inputContent)}>
         <form className={classNames(input)} onChange={onChange}>
-          {options?.map((option, index) => (
+          {Object.keys(options).map((option, index) => (
             <div className={classNames(input_checkBox)} key={`dropBoxOption${index}`}>
               <label className={classNames(label)} htmlFor={`checkBox${option}`}>
                 {option}
@@ -30,7 +42,11 @@ const InputCheckBox = ({ name, options, onChange }: Props) => {
                 value={option}
                 id={`checkBox${option}`}
               />
-              <i className={classNames('far fa-check-square', checkBoxIcon)} />
+              <i
+                className={classNames('far fa-check-square', checkBoxIcon, {
+                  [selected]: options[option],
+                })}
+              />
             </div>
           ))}
         </form>

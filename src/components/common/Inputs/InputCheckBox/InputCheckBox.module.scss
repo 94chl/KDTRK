@@ -41,6 +41,10 @@
           position: absolute;
           right: 0.8rem;
           top: calc(50% - 1.6rem);
+
+          &.selected {
+            color: #56ad79;
+          }
         }
       }
     }

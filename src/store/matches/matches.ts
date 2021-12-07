@@ -7,6 +7,8 @@ import {
   MatchTypes,
   MatchDetail,
   match as matchDummy,
+  TeamWithUser,
+  teamWithUser as teamWithUserDummy,
 } from '@/dummyMatch';
 
 export const fetchAllMatch = createAsyncThunk('matches/fetchAllMatch', async () => {
@@ -24,12 +26,20 @@ export const deleteMatchById = createAsyncThunk(
   }
 );
 
+export const fetchTeamWithUser = createAsyncThunk(
+  'matches/fetchTeamWithUser',
+  async (token: number) => {
+    return teamWithUserDummy;
+  }
+);
+
 export const matches = createSlice({
   name: 'matches',
   initialState: {
     data: {
       matches: [],
       match: [],
+      teamWithUser: [],
     },
   } as MatchTypes,
   reducers: {},
@@ -46,6 +56,13 @@ export const matches = createSlice({
     },
     [deleteMatchById.fulfilled.type]: (state: MatchTypes) => {
       state.data.match = [];
+    },
+    [fetchTeamWithUser.fulfilled.type]: (
+      state: MatchTypes,
+      action: PayloadAction<TeamWithUser>
+    ) => {
+      state.data.teamWithUser = [];
+      state.data.teamWithUser.push(...action.payload.data.teams);
     },
   },
 });
