@@ -1,26 +1,27 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-//import axios from 'axios';
+// import axios from 'axios';
 import {
   Matches,
   matches as matchesDummy,
   MatchTypes,
   MatchDetail,
   match as matchDummy,
-} from '@/dummy';
+} from '@/dummyMatch';
 
 export const fetchAllMatch = createAsyncThunk('matches/fetchAllMatch', async () => {
-  // const { data } = await axios.get('https://jsonplaceholder.typicode.com/matches');
-  // return data;
   return matchesDummy;
 });
 
-export const fetchMatchById = createAsyncThunk('posts/fetchPostById', async (id: number) => {
-  // const { data } = await axios.get(
-  //   `https://jsonplaceholder.typicode.com/posts/${id}`
-  // );
-  // return data;
+export const fetchMatchById = createAsyncThunk('matches/fetchMatchById', async (id: number) => {
   return matchDummy;
 });
+
+export const deleteMatchById = createAsyncThunk(
+  `matches/deleteMatchById`,
+  async (matchId: number) => {
+    return { matchId };
+  }
+);
 
 export const matches = createSlice({
   name: 'matches',
@@ -34,14 +35,16 @@ export const matches = createSlice({
   extraReducers: {
     [fetchAllMatch.pending.type]: (state: MatchTypes) => {
       state.data.matches = [];
-      //state.loading = true;
     },
     [fetchAllMatch.fulfilled.type]: (state: MatchTypes, action: PayloadAction<Matches>) => {
       state.data.matches.push(...action.payload.data.matches);
-      //state.loading = false;
     },
     [fetchMatchById.fulfilled.type]: (state: MatchTypes, action: PayloadAction<MatchDetail>) => {
+      state.data.match = [];
       state.data.match.push(action.payload.data);
+    },
+    [deleteMatchById.fulfilled.type]: (state: MatchTypes) => {
+      state.data.match = [];
     },
   },
 });

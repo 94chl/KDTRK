@@ -13,16 +13,16 @@ const TabBar = () => {
         </Link>
       </nav>
       <nav>
-        <Link to="/matches">매칭</Link>
+        <Link to="/matching/">매칭</Link>
       </nav>
       <nav>
-        <Link to="/hires">용병</Link>
+        <Link to="/mercenary">용병</Link>
       </nav>
       <nav>
-        <Link to="/teams">팀</Link>
+        <Link to="/team/select">팀</Link>
       </nav>
       <nav>
-        <Link to="/users">
+        <Link to="/user">
           <i className="fas fa-user" />
         </Link>
       </nav>

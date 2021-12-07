@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { Matches, Match, Hires, Teams, Users, Login, Setting } from '@/pages';
-import DefaultTemplate from '@/components/DefaultTemplate';
+import { Matches, Match, MatchModal, Hires, Teams, Users, Login, Setting } from '@/pages';
+import DefaultTemplate from '@/components/DefaultTemplate/DefaultTemplate';
 
 const App = () => {
   // 라우터 세부설정 완료시 변경필요
@@ -11,19 +11,22 @@ const App = () => {
         <Route path="/" exact>
           <h1>Home</h1>
         </Route>
-        <Route path="/matches" exact>
+        <Route path="/matching/" exact>
           <Matches />
         </Route>
-        <Route path="/matches/:matchId" exact>
+        <Route path="/matching/post/:matchId" exact>
           <Match />
         </Route>
-        <Route path="/hires" exact>
+        <Route path="/matching/edit/:matchId/" exact>
+          <MatchModal />
+        </Route>
+        <Route path="/mercenary" exact>
           <Hires />
         </Route>
-        <Route path="/teams" exact>
+        <Route path="/team/select" exact>
           <Teams />
         </Route>
-        <Route path="/users" exact>
+        <Route path="/user" exact>
           <Users />
         </Route>
         <Route path="/login" exact>

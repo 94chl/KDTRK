@@ -23,7 +23,7 @@ const Header = () => {
     <div className={classNames(header)}>
       <div className={classNames(leftButtonBox)}>
         <button type="button" onClick={handleGoBack} className={classNames(goBackButton)}>
-          <i className="far fa-chevronLeft" />
+          <i className="fas fa-chevron-left" />
         </button>
       </div>
       <div className={classNames(rightButtonBox)}>

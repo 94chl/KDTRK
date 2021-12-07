@@ -1,31 +1,18 @@
 .matchInfoCard {
   padding: 0 1.6rem;
+  border-radius: 20px;
+  border: 2px solid #c4c4c4;
+  box-sizing: border-box;
+  margin: 0 1.6rem;
+
   .matchInfoRow {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
     font-size: 1.2rem;
     text-align: center;
-    margin: 1.2rem 0;
-    gap: 0 1.6rem;
+    margin: 0.8rem 0;
+    display: flex;
 
-    .matchInfo {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-
-      &.notice {
-        &:nth-child(1) {
-          grid-column: 3;
-        }
-        &:nth-child(2) {
-          grid-column: 4;
-        }
-      }
-
-      &.normal {
-      }
-
-      &.important {
+    &.importantInfo {
+      .matchInfo {
         grid-column: 1/5;
         display: grid;
         grid-template-columns: repeat(4, 1fr);
@@ -47,9 +34,25 @@
           margin: 0;
         }
       }
+    }
+
+    &.normalInfo {
+      justify-content: space-around;
+      .matchInfo {
+        width: fit-content;
+        min-width: 8rem;
+        border-radius: 20px;
+        border: 2px solid #c4c4c4;
+        box-sizing: border-box;
+      }
+    }
+
+    .matchInfo {
+      width: 100%;
 
       &_name {
         border: 2px solid #c4c4c4;
+        box-sizing: border-box;
         border-radius: 5px;
         padding: 0.8rem 0;
         letter-spacing: 0.2rem;

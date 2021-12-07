@@ -1,22 +1,22 @@
 /* eslint-disable react/jsx-fragments */
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store';
 import { fetchMatchById } from '@/store/match';
 import { MatchInfo, TeamCard, MatchDetail, MatchButton } from '@/components/Match';
+import useMount from '@/hooks/useMount';
 
 const Match = () => {
   const dispatch = useDispatch();
 
-  useEffect(() => {
+  useMount(() => {
     dispatch(fetchMatchById(1));
-  }, [dispatch]);
+  });
 
   const { match } = useSelector((store: RootState) => store.matches).data;
 
   return (
     <div>
-      <h1>Match</h1>
       {match.map((matchInfo) => (
         <Fragment key={`match${matchInfo.matchId}`}>
           <MatchInfo key={`matchInfo${matchInfo.matchId}`} match={matchInfo} />
