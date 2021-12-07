@@ -2,7 +2,7 @@
 import React, { Fragment } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store';
-import { fetchMatchById } from '@/store/match';
+import { fetchMatchById } from '@/store/matches/matches';
 import { MatchInfo, TeamCard, MatchDetail, MatchButton } from '@/components/Match';
 import useMount from '@/hooks/useMount';
 

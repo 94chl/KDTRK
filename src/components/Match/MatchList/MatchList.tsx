@@ -9,8 +9,8 @@ const MatchList = () => {
   return (
     <div>
       <ul>
-        {data.matches.map((match) => (
-          <MatchCard key={match.matchId} match={match} />
+        {data.matches.map((match, index) => (
+          <MatchCard key={match.matchId + index} match={match} />
         ))}
       </ul>
     </div>

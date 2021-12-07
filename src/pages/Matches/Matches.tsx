@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { MatchList } from '@/components/Match';
-import { fetchAllMatch } from '@/store/match';
+import { fetchAllMatch } from '@/store/matches/matches';
+import { store } from '@/store';
 
 const Matches = () => {
+  console.log(store.dispatch);
   const dispatch = useDispatch();
 
   useEffect(() => {

@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { matches } from './match';
+import { matches } from './matches/matches';
 
 export const store = configureStore({
   reducer: {

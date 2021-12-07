@@ -19,15 +19,8 @@ const MatchModal = () => {
 
   const handleOnChangeCheckBox = (e: any) => {
     const target = e.target.value;
-    const newArr = [...checkBox];
-    const targetIndex = newArr.findIndex(target);
-    console.log(targetIndex);
-    if (targetIndex < 0) {
-      newArr.push(target);
-    } else {
-      newArr.splice(targetIndex, 1);
-    }
-    setCheckBox(newArr);
+    console.log(target);
+    console.log(checkBox.findIndex(target));
   };
 
   const handleOnChangeDetail = (e: any) => {

@@ -4,7 +4,7 @@ import { Link, useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import styles from './MatchDetail.module.scss';
 import { Match } from '@/dummyMatch';
-import { deleteMatchById } from '@/store/match';
+import { deleteMatchById } from '@/store/matches/matches';
 
 interface Props {
   match: Match;
