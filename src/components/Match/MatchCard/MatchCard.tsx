@@ -1,9 +1,9 @@
 import React, { useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Match } from '@/dummyMatch';
+import { PostItem } from '@/store/posts/posts';
 
 interface Props {
-  match: Omit<Match, 'homeTeam'>;
+  match: PostItem;
 }
 
 const MatchCard = ({ match }: Props) => {
@@ -18,7 +18,7 @@ const MatchCard = ({ match }: Props) => {
         </ul>
       </div>
       <button type="button">
-        <Link to={`/matching/post/${match.matchId}`}>JOIN</Link>
+        <Link to={`/matches/post/${match.matchId}`}>JOIN</Link>
       </button>
     </li>
   );

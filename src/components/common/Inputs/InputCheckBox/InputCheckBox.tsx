@@ -6,50 +6,48 @@ interface Options {
   [key: string]: boolean;
 }
 interface Props {
-  name: string;
+  labelName: string;
   options: Options;
-  onChange: React.FormEventHandler<HTMLFormElement>;
+  onChange: React.ChangeEventHandler<HTMLInputElement>;
 }
 
 const {
   inputBox,
   inputName,
   inputContent,
-  input,
-  input_checkBox,
+  inputCheckBox,
   label,
   checkBox,
   checkBoxIcon,
   selected,
 } = styles;
 
-const InputCheckBox = ({ name, options, onChange }: Props) => {
+const InputCheckBox = ({ labelName, options, onChange }: Props) => {
   return (
     <div className={classNames(inputBox)}>
       <div className={classNames(inputName)}>
-        <h3>{name}</h3>
+        <h3>{labelName}</h3>
       </div>
       <div className={classNames(inputContent)}>
-        <form className={classNames(input)} onChange={onChange}>
-          {Object.keys(options).map((option, index) => (
-            <div className={classNames(input_checkBox)} key={`dropBoxOption${index}`}>
-              <label className={classNames(label)} htmlFor={`checkBox${option}`}>
-                {option}
-              </label>
-              <input
-                className={classNames(checkBox)}
-                type="checkbox"
-                value={option}
-                id={`checkBox${option}`}
-              />
-              <i
-                className={classNames('far fa-check-square', checkBoxIcon, {
-                  [selected]: options[option],
-                })}
-              />
-            </div>
-          ))}
-        </form>
+        {Object.keys(options).map((option, index) => (
+          <div className={classNames(inputCheckBox)} key={`dropBoxOption${index}`}>
+            <label className={classNames(label)} htmlFor={`checkBox${option}`}>
+              {option}
+            </label>
+            <input
+              className={classNames(checkBox)}
+              type="checkbox"
+              value={option}
+              id={`checkBox${option}`}
+              onChange={onChange}
+            />
+            <i
+              className={classNames('far fa-check-square', checkBoxIcon, {
+                [selected]: options[option],
+              })}
+            />
+          </div>
+        ))}
       </div>
     </div>
   );

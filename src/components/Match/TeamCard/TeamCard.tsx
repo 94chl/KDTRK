@@ -60,6 +60,7 @@ const TeamCard = ({ team }: Props) => {
               [teamUser_extra]: index > 4,
               [showTeamUser_extra]: index > 4 && showTeamUser,
             })}
+            key={`teamUser${index}`}
           >
             {user.teamUserName}
           </div>

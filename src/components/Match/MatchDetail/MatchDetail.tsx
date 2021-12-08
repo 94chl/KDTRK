@@ -3,11 +3,10 @@ import classNames from 'classnames';
 import { Link, useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import styles from './MatchDetail.module.scss';
-import { Match } from '@/dummyMatch';
-import { deleteMatchById } from '@/store/matches/matches';
+import { deleteMatchById, PostItem } from '@/store/posts/posts';
 
 interface Props {
-  match: Match;
+  match: PostItem;
 }
 
 const {
@@ -29,7 +28,7 @@ const MatchDetail = ({ match }: Props) => {
     if (window.confirm(`remove match${matchId}?`)) {
       dispatch(deleteMatchById(matchId));
       console.log(`${matchId} is REMOVED!`);
-      history.push('/matching/');
+      history.push('/matches/');
     }
   };
 
@@ -39,7 +38,7 @@ const MatchDetail = ({ match }: Props) => {
         <h3 className={classNames(menuName)}>상세정보</h3>
         <div className={classNames(buttonBox)}>
           <button className={classNames(editButton)} type="button">
-            <Link to={`/matching/edit/${match.matchId}`}>
+            <Link to={`/matches/edit/${match.matchId}`}>
               <i className="fas fa-pen" />
             </Link>
           </button>

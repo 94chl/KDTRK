@@ -4,13 +4,13 @@ import { MatchCard } from '@/components';
 import { RootState } from '@/store';
 
 const MatchList = () => {
-  const { data } = useSelector((store: RootState) => store.matches);
+  const { data } = useSelector((store: RootState) => store.posts);
 
   return (
     <div>
       <ul>
         {data.matches.map((match, index) => (
-          <MatchCard key={match.matchId + index} match={match} />
+          <MatchCard key={match.matchId && match.matchId + index} match={match} />
         ))}
       </ul>
     </div>

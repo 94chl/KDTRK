@@ -4,4 +4,5 @@ export { default as MatchInfo } from './MatchInfo/MatchInfo';
 export { default as MatchList } from './MatchList/MatchList';
 export { default as MatchButton } from './MatchButton/MatchButton';
 export { default as TeamCard } from './TeamCard/TeamCard';
-export { default as TempModal } from './TempModal/TempModal';
+export { default as MatchApplyModal } from './MatchApplyModal/MatchApplyModal';
+export { default as MatchApproveModal } from './MatchApproveModal/MatchApproveModal';

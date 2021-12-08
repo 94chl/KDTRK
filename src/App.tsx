@@ -11,16 +11,16 @@ const App = () => {
         <Route path="/" exact>
           <h1>Home</h1>
         </Route>
-        <Route path="/matching/" exact>
+        <Route path="/matches/" exact>
           <Matches />
         </Route>
-        <Route path="/matching/post/:matchId" exact>
+        <Route path="/matches/post/:matchId" exact>
           <Match />
         </Route>
-        <Route path="/matching/edit/:matchId/" exact>
+        <Route path="/matches/edit/:matchId/" exact>
           <MatchModal />
         </Route>
-        <Route path="/mercenary" exact>
+        <Route path="/hires" exact>
           <Hires />
         </Route>
         <Route path="/team/select" exact>

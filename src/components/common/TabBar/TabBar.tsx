@@ -13,10 +13,10 @@ const TabBar = () => {
         </Link>
       </nav>
       <nav>
-        <Link to="/matching/">매칭</Link>
+        <Link to="/matches/">매칭</Link>
       </nav>
       <nav>
-        <Link to="/mercenary">용병</Link>
+        <Link to="/hires">용병</Link>
       </nav>
       <nav>
         <Link to="/team/select">팀</Link>

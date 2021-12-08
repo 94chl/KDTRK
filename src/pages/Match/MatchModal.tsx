@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Input, InputCheckBox, InputDetail } from '@/components/common';
-import { TempModal } from '@/components';
-import { fetchTeamWithUser } from '@/store/matches/matches';
-import useMount from '@/hooks/useMount';
-import { RootState } from '@/store';
+import { Input, InputCheckBox, InputDetail } from '@/components';
 
 const dropboxOptions = ['apple', 'cherry', 'tomato'];
 
 interface CheckboxOptions {
   [key: string]: boolean;
 }
+
 const checkboxOptions: CheckboxOptions = { apple: false, cherry: false, tomato: false };
 
 const MatchModal = () => {
@@ -18,14 +14,6 @@ const MatchModal = () => {
   const [dropBox, setDropBox] = useState(dropboxOptions[0]);
   const [checkBox, setCheckBox] = useState(checkboxOptions);
   const [detail, setDetail] = useState('');
-
-  const dispatch = useDispatch();
-
-  useMount(() => {
-    dispatch(fetchTeamWithUser(1));
-  });
-
-  const { teamWithUser } = useSelector((store: RootState) => store.matches).data;
 
   const handleOnChangeText = (e: any) => {
     setText(e.target.value);
@@ -43,7 +31,7 @@ const MatchModal = () => {
   };
 
   const handleOnChangeDetail = (e: any) => {
-    setDetail(e.target.value);
+    setDetail(e);
   };
 
   useEffect(() => {
@@ -58,7 +46,7 @@ const MatchModal = () => {
       <div>Modify</div>
       <Input
         inputId="input1"
-        name="text"
+        labelName="text"
         type="text"
         icon="fas fa-comment"
         placeholder="텍스트를 입력하시오"
@@ -66,14 +54,17 @@ const MatchModal = () => {
       />
       <Input
         inputId="input2"
-        name="dropbox"
+        labelName="dropbox"
         type="dropbox"
         options={dropboxOptions}
         onChange={handleOnChangeDropBox}
       />
-      <InputCheckBox name="checkbox" options={checkBox} onChange={handleOnChangeCheckBox} />
-      <InputDetail name="text" placeholder="텍스트를 입력하시오" onChange={handleOnChangeDetail} />
-      <TempModal teamWithUser={teamWithUser} />
+      <InputCheckBox labelName="checkbox" options={checkBox} onChange={handleOnChangeCheckBox} />
+      <InputDetail
+        labelName="text"
+        placeholder="텍스트를 입력하시오"
+        onChange={handleOnChangeDetail}
+      />
     </div>
   );
 };
