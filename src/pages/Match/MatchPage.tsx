@@ -52,7 +52,7 @@ const Match = () => {
         <MatchApplyModal showMatchApplyModal={modal.matchApply} sports={match[0].sports} />
       )}
       {match[0] && modal.matchApprove && (
-        <MatchApproveModal showMatchApproveModal={modal.matchApprove} sports={match[0].sports} />
+        <MatchApproveModal showMatchApproveModal={modal.matchApprove} />
       )}
     </div>
   );
