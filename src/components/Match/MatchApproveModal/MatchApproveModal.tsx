@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, Fragment } from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
 import styles from './MatchApproveModal.module.scss';
@@ -11,37 +11,31 @@ const {
   modalBackground,
   modalContainer,
   showModal,
+  modalName,
   teamCardContainer,
   selectedTeamCard,
   buttonBox,
   submitButton,
 } = styles;
 
-interface CheckboxOptions {
-  [key: string]: boolean;
-}
-
 interface ModalState {
   showMatchApproveModal: boolean;
-  sports?: string;
 }
 
-interface SportsPlayers {
-  [key: string]: number;
-}
-
-const sportsPlayers: SportsPlayers = {
-  축구: 11,
-  풋살: 6,
-};
-
-const MatchApproveModal = ({ showMatchApproveModal, sports }: ModalState) => {
+const MatchApproveModal = ({ showMatchApproveModal }: ModalState) => {
   const { waitingTeams } = useSelector((store: RootState) => store.match).data;
-  const [selectedTeam, setSelectedTeam] = useState(waitingTeams[0]);
+  const [selectedTeam, setSelectedTeam] = useState({
+    teamWaitingId: 0,
+    teamId: 0,
+    teamLogo: '',
+    teamName: '',
+    teamMannerTemperature: 0,
+    teamUsers: [{}],
+  });
 
   const dispatch = useDispatch();
   useMount(() => {
-    dispatch(fetchWaitingTeams(1));
+    dispatch(fetchWaitingTeams(parseInt(window.location.pathname.split('/')[3], 10)));
   });
 
   const handleCloseModal = (e: any) => {
@@ -73,6 +67,9 @@ const MatchApproveModal = ({ showMatchApproveModal, sports }: ModalState) => {
       role="presentation"
     >
       <div className={classNames(modalContainer)}>
+        <div className={classNames(modalName)}>
+          <h3>매칭팀 수락</h3>
+        </div>
         {waitingTeams.map((team, index) => (
           <div key={`teamCard${team.teamId}`} className={classNames(teamCardContainer)}>
             <label
@@ -94,7 +91,7 @@ const MatchApproveModal = ({ showMatchApproveModal, sports }: ModalState) => {
         ))}
         <div className={classNames(buttonBox)}>
           <button className={classNames(submitButton)} type="button" onClick={onSubmit}>
-            신청
+            선택
           </button>
         </div>
       </div>

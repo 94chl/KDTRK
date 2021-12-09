@@ -24,13 +24,21 @@
       display: none;
     }
 
+    .modalName {
+      padding: 1.6rem 0;
+      h3 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        text-align: center;
+      }
+    }
     .buttonBox {
       width: 100%;
       padding: 1.6rem;
       background: rgba(255, 255, 255, 0.2);
 
       .submitButton {
-        width: calc(100% - 3.2rem);
+        width: 100%;
         height: 4.2rem;
         color: #fff;
         font-size: 1.6rem;

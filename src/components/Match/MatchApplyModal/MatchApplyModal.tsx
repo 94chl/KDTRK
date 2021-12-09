@@ -7,7 +7,7 @@ import { RootState } from '@/store';
 import { fetchTeamWithUser, match } from '@/store/match/match';
 import useMount from '@/hooks/useMount';
 
-const { modalBackground, modalContainer, showModal, buttonBox, submitButton } = styles;
+const { modalBackground, modalContainer, showModal, modalName, buttonBox, submitButton } = styles;
 
 interface CheckboxOptions {
   [key: string]: boolean;
@@ -30,7 +30,7 @@ const sportsPlayers: SportsPlayers = {
 const MatchApplyModal = ({ showMatchApplyModal, sports }: ModalState) => {
   const dispatch = useDispatch();
   useMount(() => {
-    dispatch(fetchTeamWithUser(1));
+    dispatch(fetchTeamWithUser(parseInt(window.location.pathname.split('/')[3], 10)));
   });
 
   const handleCloseModal = (e: any) => {
@@ -43,7 +43,7 @@ const MatchApplyModal = ({ showMatchApplyModal, sports }: ModalState) => {
 
   const placeholder = '팀을 선택해주세요';
   const teamNames = userTeams.map((team) => team.teamName);
-  const [selectedTeam, setSelectedTeam] = useState(teamNames[0]);
+  const [selectedTeam, setSelectedTeam] = useState(placeholder);
   const [teamMembers, setTeamMembers] = useState({});
   const [userLimit, setUserLimit] = useState(sports ? sportsPlayers[sports] : 0);
 
@@ -101,6 +101,9 @@ const MatchApplyModal = ({ showMatchApplyModal, sports }: ModalState) => {
       onClick={handleCloseModal}
       role="presentation"
     >
+      <div className={classNames(modalName)}>
+        <h3>매칭팀 수락</h3>
+      </div>
       <div className={classNames(modalContainer)}>
         <Input
           inputId="input2"
