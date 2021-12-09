@@ -1,0 +1,51 @@
+.inputBox {
+  padding: 1.6rem;
+
+  .inputName {
+    margin-bottom: 0.8rem;
+    font-weight: 700;
+    font-size: 1.6rem;
+  }
+
+  .inputContent {
+    position: relative;
+    display: flex;
+    height: fit-content;
+    padding: 0.8rem;
+    font-size: 1.2rem;
+    border: 0.2rem solid #c4c4c4;
+    border-radius: 0.5rem;
+
+    .inputCheckBox {
+      position: relative;
+      flex-direction: row;
+      box-sizing: border-box;
+      width: fit-content;
+      margin-right: 0.8rem;
+      border: 0.2rem solid #56ad79;
+      border-radius: 20rem;
+      cursor: pointer;
+
+      &.selected {
+        color: #fff;
+        background: #56ad79;
+      }
+
+      &:last-child {
+        margin-right: 0;
+      }
+
+      .label {
+        display: block;
+        width: 100%;
+        height: 100%;
+        padding: 0.8rem;
+        cursor: pointer;
+      }
+
+      .checkBox {
+        display: none;
+      }
+    }
+  }
+}
