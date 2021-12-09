@@ -91,7 +91,7 @@ export const matches: Matches = {
   },
 };
 
-export const match: MatchDetail = {
+export const matchDummy: MatchDetail = {
   data: {
     matchId: 1,
     city: '서울특별시',
@@ -134,6 +134,87 @@ export const match: MatchDetail = {
         {
           teamUserId: 6,
           teamUserName: '호세',
+        },
+      ],
+    },
+  },
+};
+
+export const matchDummy2: MatchDetail = {
+  data: {
+    matchId: 2,
+    city: '서울특별시',
+    region: '광진구',
+    groundName: '어린이대공원풋살장',
+    date: '2021-12-25',
+    startTime: '10:30',
+    endTime: '12:30',
+    cost: 30000,
+    ageGroup: '20s',
+    sports: '풋살',
+    detail: '어르신들환영',
+    status: '매칭전',
+    homeTeam: {
+      teamId: 1,
+      teamLogo: 's3://aasdfasd',
+      teamName: '데브코스',
+      teamMannerTemperature: 36.1,
+      teamUsers: [
+        {
+          teamUserId: 1,
+          teamUserName: '쭝',
+        },
+        {
+          teamUserId: 2,
+          teamUserName: '시즈',
+        },
+        {
+          teamUserId: 3,
+          teamUserName: '싸뮤엘',
+        },
+        {
+          teamUserId: 4,
+          teamUserName: '용스톤',
+        },
+        {
+          teamUserId: 5,
+          teamUserName: '체리',
+        },
+        {
+          teamUserId: 6,
+          teamUserName: '호세',
+        },
+      ],
+    },
+    awayTeam: {
+      teamId: 2,
+      teamLogo: 's3://aassbb',
+      teamName: '머쓱',
+      teamMannerTemperature: 40.2,
+      teamUsers: [
+        {
+          teamUserId: 11,
+          teamUserName: '쫑쫑',
+        },
+        {
+          teamUserId: 12,
+          teamUserName: '즈시',
+        },
+        {
+          teamUserId: 13,
+          teamUserName: '엘쌰무',
+        },
+        {
+          teamUserId: 14,
+          teamUserName: '톤스용',
+        },
+        {
+          teamUserId: 15,
+          teamUserName: '리체',
+        },
+        {
+          teamUserId: 16,
+          teamUserName: '세호',
         },
       ],
     },

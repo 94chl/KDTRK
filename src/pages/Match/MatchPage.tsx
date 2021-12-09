@@ -19,14 +19,15 @@ const { awayTeam, versus } = styles;
 
 const Match = () => {
   const dispatch = useDispatch();
+  const matchId = parseInt(window.location.pathname.split('/')[3], 10);
 
   useMount(() => {
-    dispatch(fetchMatchById(1));
+    dispatch(fetchMatchById(matchId));
   });
 
   const { match } = useSelector((store: RootState) => store.posts.data);
   const { modal } = useSelector((store: RootState) => store.match).data;
-
+  console.log(match);
   return (
     <div>
       {match.map((matchInfo) => (
