@@ -3,7 +3,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import {
   TeamWithUser,
-  userTeam as userTeamDummy,
+  userTeamDummy,
   TeamSimple,
   WaitingTeam,
   WaitingTeams,
@@ -37,7 +37,7 @@ interface MatchState {
 }
 
 export const match = createSlice({
-  name: 'posts',
+  name: 'match',
   initialState: {
     data: {
       userTeams: [],

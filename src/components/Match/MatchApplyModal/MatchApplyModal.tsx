@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import classNames from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import styles from './MatchApplyModal.module.scss';
 import { Input, InputCheckBox } from '@/components';
 import { RootState } from '@/store';
@@ -28,9 +29,10 @@ const sportsPlayers: SportsPlayers = {
 };
 
 const MatchApplyModal = ({ showMatchApplyModal, sports }: ModalState) => {
+  const matchId = parseInt(useParams<{ matchId: string }>().matchId, 10);
   const dispatch = useDispatch();
   useMount(() => {
-    dispatch(fetchTeamWithUser(parseInt(window.location.pathname.split('/')[3], 10)));
+    dispatch(fetchTeamWithUser(matchId));
   });
 
   const handleCloseModal = (e: any) => {
@@ -42,10 +44,10 @@ const MatchApplyModal = ({ showMatchApplyModal, sports }: ModalState) => {
   const { userTeams } = useSelector((store: RootState) => store.match).data;
 
   const placeholder = '팀을 선택해주세요';
+  const userLimit = sports ? sportsPlayers[sports] : 0;
   const teamNames = userTeams.map((team) => team.teamName);
   const [selectedTeam, setSelectedTeam] = useState(placeholder);
-  const [teamMembers, setTeamMembers] = useState({});
-  const [userLimit, setUserLimit] = useState(sports ? sportsPlayers[sports] : 0);
+  const [teamMembers, setTeamMembers] = useState<CheckboxOptions>({});
 
   const setSelectedTeamUsers = useCallback(() => {
     const selectedTeamInfo = userTeams.filter((team) => team.teamName === selectedTeam)[0];
@@ -78,18 +80,24 @@ const MatchApplyModal = ({ showMatchApplyModal, sports }: ModalState) => {
       window.alert('올바른 팀을 선택해주세요');
       return;
     }
+    const selectedTeamInfo = userTeams.filter((team) => team.teamName === selectedTeam)[0];
+    const selectedTeamUsers = selectedTeamInfo ? selectedTeamInfo.teamUsers : [];
+
     const selectedTeamWithUsers = {
       teamId: userTeams.filter((team) => team.teamName === selectedTeam)[0].teamId,
-      players: Object.entries(teamMembers).reduce((acc: string[], cur) => {
-        if (cur[1]) acc.push(cur[0]);
-        return acc;
-      }, []),
+      players: selectedTeamUsers.filter(
+        (user) => user.teamUserName && teamMembers[user.teamUserName]
+      ),
     };
     if (selectedTeamWithUsers.players.length !== userLimit) {
       window.alert('인원미달');
       return;
     }
-    console.log(selectedTeamWithUsers);
+
+    // Parameters
+    // Path = matchId
+    // Body = teamId: Number, players: Array
+    console.log(matchId, selectedTeamWithUsers);
     // dispatch(match.actions.toggleModal({ modalName: 'matchApply' }));
   };
 
@@ -101,10 +109,10 @@ const MatchApplyModal = ({ showMatchApplyModal, sports }: ModalState) => {
       onClick={handleCloseModal}
       role="presentation"
     >
-      <div className={classNames(modalName)}>
-        <h3>매칭팀 수락</h3>
-      </div>
       <div className={classNames(modalContainer)}>
+        <div className={classNames(modalName)}>
+          <h3>매칭 신청</h3>
+        </div>
         <Input
           inputId="input2"
           labelName="팀 선택"
@@ -119,6 +127,7 @@ const MatchApplyModal = ({ showMatchApplyModal, sports }: ModalState) => {
             }/${userLimit})`}
             options={teamMembers}
             onChange={handleOnChangeTeamMembers}
+            icon="far fa-check-square"
           />
         )}
         <div className={classNames(buttonBox)}>

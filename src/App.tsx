@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { Matches, Match, MatchModal, Hires, Teams, Users, Login, Setting } from '@/pages';
+import { Matches, Match, NewMatch, Hires, Teams, Users, Login, Setting } from '@/pages';
 import DefaultTemplate from '@/components/DefaultTemplate/DefaultTemplate';
 
 const App = () => {
@@ -17,8 +17,11 @@ const App = () => {
         <Route path="/matches/post/:matchId" exact>
           <Match />
         </Route>
-        <Route path="/matches/edit/:matchId/" exact>
-          <MatchModal />
+        <Route path="/matches/edit/:matchId" exact>
+          <Match />
+        </Route>
+        <Route path="/matches/new" exact>
+          <NewMatch />
         </Route>
         <Route path="/hires" exact>
           <Hires />

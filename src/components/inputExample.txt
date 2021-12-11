@@ -1,0 +1,28 @@
+
+  const [detail, setDetail] = useState('');
+  const handleOnChangeDetail = (e: any) => {
+    setDetail(e);
+  };
+  const submitDetail = () => {
+    console.log(detail);
+    localStorage.setItem('detail', detail);
+  };
+  const loadDetail = () => {
+    const savedDetail = localStorage.getItem('detail') || null;
+    if (savedDetail) {
+      setDetail(savedDetail);
+    }
+  };
+        <button type="button" onClick={submitDetail}>
+          save
+        </button>
+        <button type="button" onClick={loadDetail}>
+          load
+        </button>
+        <InputDetail
+          labelName="text"
+          placeholder="텍스트를 입력하세요"
+          onChange={handleOnChangeDetail}
+          styleProps={{ inputContentHeight: '8rem', inputContentFontColor: 'green' }}
+        />
+        <div dangerouslySetInnerHTML={{ __html: detail }} />

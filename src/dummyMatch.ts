@@ -233,7 +233,7 @@ export interface TeamWithUser {
   };
 }
 
-export const userTeam: TeamWithUser = {
+export const userTeamDummy: TeamWithUser = {
   data: {
     teams: [
       {
@@ -398,6 +398,100 @@ export const WaitingTeamsDummy: WaitingTeams = {
             teamUserName: '세호',
           },
         ],
+      },
+    ],
+  },
+};
+
+export interface User {
+  name: string;
+  nickName: string;
+  bio: string;
+  sportsName: string;
+  gender: string;
+  ageGroup: string;
+  tagNames: string[];
+  matchCount: number;
+  mannerTemperature: number;
+  myTeams: { teamId: number; TeamName: string; TeamLogo: string }[];
+  matchsSummary: {
+    matchId: number;
+    matchDate: string;
+    registerTeamName: string;
+    registerTeamLogo: string;
+    applyTeamName: string;
+    applyTeamLogo: string;
+  }[];
+}
+
+export interface UserData {
+  data: User;
+}
+
+export const userDummy: UserData = {
+  data: {
+    name: '김홍중',
+    nickName: '쯍',
+    bio: '안녕~ 난 쯍이라고해',
+    sportsName: 'FOOTBALL',
+    gender: 'MALE',
+    ageGroup: 'FORTIES',
+    tagNames: ['시간을 잘지켜요', '잘해요', '발이빨라요'],
+    matchCount: 20,
+    mannerTemperature: 36.5,
+    myTeams: [
+      { teamId: 1, TeamName: 't1', TeamLogo: 'http://matchus.com/img/joLogo.img' },
+      { teamId: 2, TeamName: 't2', TeamLogo: 'http://matchus.com/img/joLogo.img' },
+    ],
+    matchsSummary: [
+      {
+        matchId: 1,
+        matchDate: '2021-12-01',
+        registerTeamName: 't1',
+        registerTeamLogo: 'http://matchus.com/img/joLogo.img',
+        applyTeamName: 't2',
+        applyTeamLogo: 'http://matchus.com/img/joLogo.img',
+      },
+      {
+        matchId: 2,
+        matchDate: '2021-12-03',
+        registerTeamName: 't3',
+        registerTeamLogo: 'http://matchus.com/img/joLogo.img',
+        applyTeamName: 't5',
+        applyTeamLogo: 'http://matchus.com/img/joLogo.img',
+      },
+    ],
+  },
+};
+
+export const userDummy2: UserData = {
+  data: {
+    name: '고길동',
+    nickName: '소드마스터',
+    bio: '이 서늘하고 묵직한 감각',
+    sportsName: 'FOOTBALL',
+    gender: 'MALE',
+    ageGroup: 'FORTIES',
+    tagNames: ['시간을 잘지켜요', '잘해요', '발이빨라요'],
+    matchCount: 100,
+    mannerTemperature: 16.5,
+    myTeams: [],
+    matchsSummary: [
+      {
+        matchId: 10,
+        matchDate: '2021-12-01',
+        registerTeamName: 't1',
+        registerTeamLogo: 'http://matchus.com/img/joLogo.img',
+        applyTeamName: 't2',
+        applyTeamLogo: 'http://matchus.com/img/joLogo.img',
+      },
+      {
+        matchId: 20,
+        matchDate: '2021-12-03',
+        registerTeamName: 't3',
+        registerTeamLogo: 'http://matchus.com/img/joLogo.img',
+        applyTeamName: 't5',
+        applyTeamLogo: 'http://matchus.com/img/joLogo.img',
       },
     ],
   },

@@ -3,8 +3,9 @@ import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import styles from './TabBar.module.scss';
 
+const { tabBar } = styles;
+
 const TabBar = () => {
-  const { tabBar } = styles;
   return (
     <div className={classNames(tabBar)}>
       <nav>
