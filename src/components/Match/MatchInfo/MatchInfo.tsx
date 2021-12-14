@@ -1,10 +1,10 @@
 import React from 'react';
 import classNames from 'classnames';
-import { PostItem } from '@/store/posts/posts';
+import { Match } from '@/types/match';
 import styles from './MatchInfo.module.scss';
 
 interface Props {
-  match: PostItem;
+  match: Match;
 }
 
 const { matchInfoCard, matchInfoRow, importantInfo, normalInfo, matchInfo, matchInfo_content } =
@@ -15,7 +15,9 @@ const MatchInfo = ({ match }: Props) => {
     <div className={classNames(matchInfoCard)}>
       <div className={classNames(matchInfoRow)}>
         <div className={classNames(matchInfo)}>
-          <div className={classNames(matchInfo_content)}>{`${match.date} ${match.startTime}`}</div>
+          <div
+            className={classNames(matchInfo_content)}
+          >{`${match.date} ${match.startTime.hour}:${match.startTime.minute}`}</div>
         </div>
         <div className={classNames(matchInfo)}>
           <div className={classNames(matchInfo_content)}>{match.sports}</div>
@@ -27,7 +29,7 @@ const MatchInfo = ({ match }: Props) => {
       <div className={classNames(matchInfoRow, importantInfo)}>
         <div className={classNames(matchInfo)}>
           <div className={classNames(matchInfo_content)}>
-            {`${match.city} ${match.region} ${match.groundName}`}
+            {`${match.city} ${match.region} ${match.ground}`}
           </div>
         </div>
       </div>

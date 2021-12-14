@@ -1,10 +1,25 @@
 import React, { useState } from 'react';
 import classNames from 'classnames';
-import { Team } from '@/dummyMatch';
 import styles from './TeamCard.module.scss';
 
 interface Props {
-  team: Team;
+  team: {
+    captainId?: number;
+    captainName?: string;
+    teamId: number;
+    teamLogo: string;
+    teamName: string;
+    mannerTemperature?: number;
+    teamMannerTemperature?: number;
+    matchMembers?: {
+      userId: number;
+      userName: string;
+    }[];
+    teamUsers?: {
+      userId: number;
+      userName: string;
+    }[];
+  };
 }
 
 const {
@@ -24,8 +39,11 @@ const {
   showTeamUserButton,
 } = styles;
 
+const showPlayersLimit = 5;
+
 const TeamCard = ({ team }: Props) => {
   const [showTeamUser, setShowTeamUser] = useState(false);
+  const teamMembers = team.matchMembers || team.teamUsers || [];
 
   const handleShowTeamUser = () => {
     setShowTeamUser(!showTeamUser);
@@ -39,7 +57,9 @@ const TeamCard = ({ team }: Props) => {
         </div>
         <div className={classNames(teamName)}>{team.teamName}</div>
         <div className={classNames(captainInfo)}>
-          <div className={classNames(captainName)}>팀장 추후 업뎃</div>
+          <div className={classNames(captainName)}>
+            {team.captainName || teamMembers[0]?.userName}
+          </div>
           <div className={classNames(buttonBox)}>
             <button type="button">
               <i className="fas fa-user" />
@@ -50,19 +70,21 @@ const TeamCard = ({ team }: Props) => {
           </div>
         </div>
         <div className={classNames(tags)}>
-          <div className={classNames(tag)}>{`${team.teamMannerTemperature}℃`}</div>
+          <div className={classNames(tag)}>{`${
+            team.mannerTemperature || team.teamMannerTemperature
+          }℃`}</div>
         </div>
       </div>
       <div className={classNames(teamUsers)}>
-        {team.teamUsers.map((user, index) => (
+        {teamMembers?.map((user, index) => (
           <div
             className={classNames(teamUser, {
-              [teamUser_extra]: index > 4,
-              [showTeamUser_extra]: index > 4 && showTeamUser,
+              [teamUser_extra]: index > showPlayersLimit - 1,
+              [showTeamUser_extra]: index > showPlayersLimit - 1 && showTeamUser,
             })}
             key={`teamUser${index}`}
           >
-            {user.teamUserName}
+            {user.userName}
           </div>
         ))}
         <div>

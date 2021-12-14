@@ -1,51 +1,34 @@
 import React, { useState } from 'react';
 import classNames from 'classnames';
-import { useDispatch } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import styles from './MatchReviewModal.module.scss';
 import { InputCheckBox } from '@/components';
 import { match } from '@/store/match/match';
+import { RootState } from '@/store';
+import { TAG_OPTIONS, TagOptions } from '@/consts';
 
 const { modalBackground, modalContainer, showModal, modalName, buttonBox, submitButton } = styles;
-
-interface CheckboxOptions {
-  [key: string]: boolean;
-}
-
-interface TagOptions {
-  [skill: string]: CheckboxOptions;
-  good: CheckboxOptions;
-  bad: CheckboxOptions;
-}
-
-const tagOptions: TagOptions = {
-  skill: {
-    '발이 빨라요': false,
-    '두 개의 심장': false,
-    패스마스터: false,
-    '개인기가 화려해요': false,
-  },
-  good: { '매너가 좋아요': false, '뒤끝이 없어요': false, '시간약속을 잘 지켜요': false },
-  bad: { 거칠어요: false, 히드라: false, 폭력적이에요: false, 지각쟁이: false },
-};
 
 interface ModalState {
   showMatchReviewModal: boolean;
 }
 
+const selectTagsLimit = 3;
+
 const MatchReviewModal = ({ showMatchReviewModal }: ModalState) => {
+  const { matchId } = useSelector((store: RootState) => store.match.data);
   const dispatch = useDispatch();
 
-  const handleCloseModal = (e: any) => {
-    if (e.target.classList.contains('modalBackground')) {
+  const handleCloseModal = (e: React.MouseEvent<HTMLElement>) => {
+    if ((e.target as Element).classList.contains('modalBackground')) {
       dispatch(match.actions.toggleModal({ modalName: 'matchReview' }));
     }
   };
 
-  const [selectedTags, setSelectedTags] = useState(tagOptions);
+  const [selectedTags, setSelectedTags] = useState(TAG_OPTIONS);
 
-  const handleOnChangeSelectedTags = (e: any, tagCategory: string) => {
-    const targetTag: string = e.target.value;
+  const handleOnChangeSelectedTags = (e: React.ChangeEvent<HTMLElement>, tagCategory: string) => {
+    const targetTag: string = (e.target as HTMLInputElement).value;
     const newSelectedTags: TagOptions = {
       skill: { ...selectedTags.skill },
       good: { ...selectedTags.good },
@@ -63,24 +46,24 @@ const MatchReviewModal = ({ showMatchReviewModal }: ModalState) => {
   };
 
   const onSubmit = () => {
-    const selectedSkillTags = Object.entries(selectedTags.skill).reduce((acc: string[], cur) => {
-      if (cur[1]) acc.push(cur[0]);
-      return acc;
+    const skillTags = Object.entries(selectedTags.skill);
+    const selectedSkillTags = skillTags.reduce((selected: string[], tag) => {
+      if (tag[1]) selected.push(tag[0]);
+      return selected;
     }, []);
-    const selectedGoodTags = Object.entries(selectedTags.good).reduce((acc: string[], cur) => {
-      if (cur[1]) acc.push(cur[0]);
-      return acc;
+    const goodTags = Object.entries(selectedTags.good);
+    const selectedGoodTags = goodTags.reduce((selected: string[], tag) => {
+      if (tag[1]) selected.push(tag[0]);
+      return selected;
     }, []);
-    const selectedBadTags = Object.entries(selectedTags.bad).reduce((acc: string[], cur) => {
-      if (cur[1]) acc.push(cur[0]);
-      return acc;
+    const badTags = Object.entries(selectedTags.bad);
+    const selectedBadTags = badTags.reduce((selected: string[], tag) => {
+      if (tag[1]) selected.push(tag[0]);
+      return selected;
     }, []);
     const totalSelectedTags = [...selectedSkillTags, ...selectedGoodTags, ...selectedBadTags];
-    const matchId = parseInt(useParams<{ matchId: string }>().matchId, 10);
 
-    // Parameters
-    // Path = matchId: Number, teamId: Number (상대팀: 추후 추가)
-    // Body = Tags: Array
+    // TODO: 매칭 평가 API 요청
     console.log(matchId, totalSelectedTags);
     // dispatch(match.actions.toggleModal({ modalName: 'matchApply' }));
   };
@@ -98,7 +81,9 @@ const MatchReviewModal = ({ showMatchReviewModal }: ModalState) => {
           <h3>매칭 평가</h3>
         </div>
         <InputCheckBox
-          labelName={`스킬 (${Object.values(selectedTags.skill).filter((tag) => tag).length}/3)`}
+          labelName={`스킬 (${
+            Object.values(selectedTags.skill).filter((tag) => tag).length
+          }/${selectTagsLimit})`}
           options={selectedTags.skill}
           onChange={(e) => handleOnChangeSelectedTags(e, 'skill')}
           styleProps={{
@@ -109,7 +94,9 @@ const MatchReviewModal = ({ showMatchReviewModal }: ModalState) => {
           }}
         />
         <InputCheckBox
-          labelName={`굿 (${Object.values(selectedTags.good).filter((tag) => tag).length}/3)`}
+          labelName={`굿 (${
+            Object.values(selectedTags.good).filter((tag) => tag).length
+          }/${selectTagsLimit})`}
           options={selectedTags.good}
           onChange={(e) => handleOnChangeSelectedTags(e, 'good')}
           styleProps={{
@@ -120,7 +107,9 @@ const MatchReviewModal = ({ showMatchReviewModal }: ModalState) => {
           }}
         />
         <InputCheckBox
-          labelName={`배드 (${Object.values(selectedTags.bad).filter((tag) => tag).length}/3)`}
+          labelName={`배드 (${
+            Object.values(selectedTags.bad).filter((tag) => tag).length
+          }/${selectTagsLimit})`}
           options={selectedTags.bad}
           onChange={(e) => handleOnChangeSelectedTags(e, 'bad')}
           styleProps={{

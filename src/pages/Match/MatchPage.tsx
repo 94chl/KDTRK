@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import classNames from 'classnames';
 import { useParams } from 'react-router-dom';
 import { RootState } from '@/store';
-import { fetchMatchById } from '@/store/posts/posts';
+import { match as matchReducer, fetchMatchById } from '@/store/match/match';
 import {
   MatchInfo,
   TeamCard,
@@ -21,30 +21,26 @@ const { awayTeam, versus } = styles;
 
 const Match = () => {
   const dispatch = useDispatch();
-  const matchId = parseInt(useParams<{ matchId: string }>().matchId, 10);
+  const matchId = parseInt(useParams<{ postId: string }>().postId, 10);
+
+  const { match, modal } = useSelector((store: RootState) => store.match.data);
 
   useMount(() => {
     dispatch(fetchMatchById(matchId));
+    dispatch(matchReducer.actions.setMatchId({ matchId }));
   });
-
-  const { match } = useSelector((store: RootState) => store.posts.data);
-  const { modal } = useSelector((store: RootState) => store.match).data;
 
   return (
     <div>
       {match.map((matchInfo) => (
         <Fragment key={`match${matchInfo.matchId}`}>
-          <MatchInfo key={`matchInfo${matchInfo.matchId}`} match={matchInfo} />
-          {matchInfo.homeTeam && (
-            <TeamCard key={`teamInfo${matchInfo.homeTeam}`} team={matchInfo.homeTeam} />
-          )}
-          {!matchInfo.awayTeam && (
-            <MatchDetail key={`matchDetail${matchInfo.matchId}`} match={matchInfo} />
-          )}
-          {matchInfo.awayTeam && (
+          <MatchInfo match={matchInfo} />
+          {matchInfo.registerTeamInfo && <TeamCard team={matchInfo.registerTeamInfo} />}
+          {!matchInfo.applyTeamInfo && <MatchDetail match={matchInfo} />}
+          {matchInfo.applyTeamInfo && (
             <div className={classNames(awayTeam)}>
               <div className={classNames(versus)}>VS</div>
-              <TeamCard key={`teamInfo${matchInfo.awayTeam}`} team={matchInfo.awayTeam} />
+              <TeamCard team={matchInfo.applyTeamInfo} />
             </div>
           )}
         </Fragment>

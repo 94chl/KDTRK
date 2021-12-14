@@ -21,6 +21,7 @@ interface Props {
   onChange: React.ChangeEventHandler<HTMLInputElement> &
     React.ChangeEventHandler<HTMLSelectElement>;
   styleProps?: StyleProps;
+  value?: string | number;
 }
 
 const { inputBox, inputName, inputContent, inputText, inputDropBox } = styles;
@@ -33,10 +34,19 @@ const styleFormat: StyleProps = {
   inputContentHeight: '100%',
   inputContentFontColor: '#000',
   inputContentBackgroundColor: '#fff',
-  inputContentCursor: 'default',
+  inputContentCursor: 'auto',
 };
 
-const Input = ({ labelName, inputId, placeholder, type, options, onChange, styleProps }: Props) => {
+const Input = ({
+  labelName,
+  inputId,
+  placeholder,
+  type,
+  options,
+  onChange,
+  styleProps,
+  value,
+}: Props) => {
   const defaultStyle = { ...styleFormat };
 
   if (styleProps) {
@@ -82,6 +92,7 @@ const Input = ({ labelName, inputId, placeholder, type, options, onChange, style
                 background: inputContentBackgroundColor,
                 cursor: inputContentCursor,
               }}
+              value={value}
             />
           </div>
         )}
@@ -96,6 +107,7 @@ const Input = ({ labelName, inputId, placeholder, type, options, onChange, style
               background: inputContentBackgroundColor,
               cursor: inputContentCursor,
             }}
+            defaultValue={Object.keys(options || {})[0]}
           >
             {options?.map((option, index) => (
               <option value={option} key={`dropBoxOption${index}`}>
