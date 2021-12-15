@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import classNames from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
-import styles from './MatchApplyModal.module.scss';
-import { Input, InputCheckBox } from '@/components';
+import { useHistory } from 'react-router-dom';
+import styles from './MatchTeamMemberModal.module.scss';
+import { InputCheckBox } from '@/components';
 import { RootState } from '@/store';
-import { fetchTeamWithUser, match } from '@/store/match/match';
+import { fetchTeamWithUser, match, modifyTeamMember } from '@/store/match/match';
 import useMount from '@/hooks/useMount';
 import { SPORTS_PLAYER } from '@/consts';
+import { getMemberInfo } from '@/api';
+import { TeamMemberInfo } from '@/types/match';
 
 const { modalBackground, modalContainer, showModal, modalName, buttonBox, submitButton } = styles;
 
@@ -15,12 +18,17 @@ interface CheckboxOptions {
 }
 
 interface ModalState {
-  showMatchApplyModal: boolean;
-  sports?: string;
+  showMatchTeamMemberModal: boolean;
+  sports: string;
+  teamInfo: {
+    teamName: string;
+    teamId: number;
+  };
 }
 
-const MatchApplyModal = ({ showMatchApplyModal, sports }: ModalState) => {
+const MatchTeamMemberModal = ({ showMatchTeamMemberModal, sports, teamInfo }: ModalState) => {
   const { matchId } = useSelector((store: RootState) => store.match.data);
+  const history = useHistory();
   const dispatch = useDispatch();
   useMount(() => {
     dispatch(fetchTeamWithUser(matchId));
@@ -28,31 +36,28 @@ const MatchApplyModal = ({ showMatchApplyModal, sports }: ModalState) => {
 
   const handleCloseModal = (e: React.MouseEvent<HTMLElement>) => {
     if ((e.target as Element).classList.contains('modalBackground')) {
-      dispatch(match.actions.toggleModal({ modalName: 'matchApply' }));
+      dispatch(match.actions.toggleModal({ modalName: 'matchTeamMember' }));
     }
   };
 
-  const { userTeams } = useSelector((store: RootState) => store.match).data;
-
-  const placeholder = '팀을 선택해주세요';
+  // TODO: team 회원정보를 받아오는 API콜 추가필요
+  const placeholder = teamInfo.teamName;
   const userLimit = sports ? SPORTS_PLAYER[sports] : 0;
-  const teamNames = userTeams.map((team) => team.teamName);
   const [selectedTeam, setSelectedTeam] = useState(placeholder);
   const [teamMembers, setTeamMembers] = useState<CheckboxOptions>({});
+  const [teamAllMembers, setTeamAllMembers] = useState<TeamMemberInfo[]>([]);
 
-  const setSelectedTeamUsers = useCallback(() => {
-    const selectedTeamInfo = userTeams.filter((team) => team.teamName === selectedTeam)[0];
-    const selectedTeamUsers = selectedTeamInfo ? selectedTeamInfo.teamUsers : [];
+  const setmembers = useCallback(async () => {
+    const { members } = await getMemberInfo(teamInfo.teamId);
+    setTeamAllMembers(members);
+
     const teamUsersOptions: CheckboxOptions = {};
-    selectedTeamUsers.forEach((user) => {
+    members.forEach((user: TeamMemberInfo) => {
       if (user.userName) teamUsersOptions[user.userName] = false;
     });
-    setTeamMembers(teamUsersOptions);
-  }, [selectedTeam, userTeams]);
 
-  const handleOnChangeTeams = (e: React.ChangeEvent<HTMLElement>) => {
-    setSelectedTeam((e.target as HTMLInputElement).value);
-  };
+    setTeamMembers(teamUsersOptions);
+  }, [teamInfo]);
 
   const handleOnChangeTeamMembers = (e: React.ChangeEvent<HTMLElement>) => {
     const target: string = (e.target as HTMLInputElement).value;
@@ -62,55 +67,48 @@ const MatchApplyModal = ({ showMatchApplyModal, sports }: ModalState) => {
   };
 
   useEffect(() => {
-    setSelectedTeamUsers();
-  }, [setSelectedTeamUsers]);
+    setmembers();
+  }, [setmembers]);
 
   const onSubmit = () => {
-    if (!selectedTeam || selectedTeam === placeholder) {
-      window.alert('올바른 팀을 선택해주세요');
-      return;
-    }
-    const selectedTeamInfo = userTeams.filter((team) => team.teamName === selectedTeam)[0];
-    const selectedTeamUsers = selectedTeamInfo ? selectedTeamInfo.teamUsers : [];
-
     const selectedTeamWithUsers = {
-      teamId: userTeams.filter((team) => team.teamName === selectedTeam)[0].teamId,
-      players: selectedTeamUsers
+      teamId: teamInfo.teamId,
+      players: teamAllMembers
         .filter((user) => user.userName && teamMembers[user.userName])
         .map((user) => user.userId),
     };
-    if (selectedTeamWithUsers.players.length !== userLimit) {
+
+    if (selectedTeamWithUsers.players.length < userLimit) {
       window.alert('인원미달');
       return;
     }
 
+    const requestBody = {
+      matchId,
+      ...selectedTeamWithUsers,
+    };
+
     // TODO: 매칭 신청 API 요청
-    console.log(matchId, selectedTeamWithUsers);
-    // dispatch(match.actions.toggleModal({ modalName: 'matchApply' }));
+    dispatch(modifyTeamMember(requestBody));
+    dispatch(match.actions.toggleModal({ modalName: 'matchTeamMember' }));
+    history.go(0);
   };
 
   return (
     <div
       className={classNames('modalBackground', modalBackground, {
-        [showModal]: showMatchApplyModal,
+        [showModal]: showMatchTeamMemberModal,
       })}
       onClick={handleCloseModal}
       role="presentation"
     >
       <div className={classNames(modalContainer)}>
         <div className={classNames(modalName)}>
-          <h3>매칭 신청</h3>
+          <h3>팀원 변경</h3>
         </div>
-        <Input
-          inputId="input2"
-          labelName="팀 선택"
-          type="dropbox"
-          options={[placeholder, ...teamNames]}
-          onChange={handleOnChangeTeams}
-        />
         {Object.keys(teamMembers).length > 0 && (
           <InputCheckBox
-            labelName={`${selectedTeam}(${
+            labelName={`${teamInfo.teamName}(${
               Object.values(teamMembers).filter((member) => member).length
             }/${userLimit})`}
             options={teamMembers}
@@ -120,7 +118,7 @@ const MatchApplyModal = ({ showMatchApplyModal, sports }: ModalState) => {
         )}
         <div className={classNames(buttonBox)}>
           <button className={classNames(submitButton)} type="button" onClick={onSubmit}>
-            신청
+            변경
           </button>
         </div>
       </div>
@@ -128,4 +126,4 @@ const MatchApplyModal = ({ showMatchApplyModal, sports }: ModalState) => {
   );
 };
 
-export default MatchApplyModal;
+export default MatchTeamMemberModal;

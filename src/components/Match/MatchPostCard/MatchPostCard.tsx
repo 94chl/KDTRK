@@ -41,7 +41,6 @@ const MatchPostCard = ({ matchInfo }: Props) => {
           <div>{`${date} ${startTime}`}</div>
           <div>{`${city} ${region} ${ground}`}</div>
           <div className={classNames(postTags)}>
-            <span>{`${cost}원`}</span>
             <span>{ageGroup}</span>
             <span>{teamMannerTemperature}</span>
           </div>
