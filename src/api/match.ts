@@ -4,6 +4,7 @@ import {
   MatchDeleteInfo,
   TeamMemberEdit,
   MatchListFilter,
+  MatchPostNew,
   MatchPostEdit,
   MatchReviewInfo,
   MatchApplyInfo,
@@ -28,26 +29,11 @@ export const fetchMatchById = async (matchId: number) => {
   return matchInfo;
 };
 
-export const createMatch = async (createMatchInfo: Omit<MatchPostEdit, 'matchId'>) => {
-  const { sports, ageGroup, city, region, ground, cost, detail, date, startTime, endTime } =
-    createMatchInfo;
-  const matchInfo = {
-    sports,
-    ageGroup,
-    city,
-    region,
-    ground,
-    cost,
-    detail,
-    date,
-    startTime,
-    endTime,
-  };
-
+export const createMatch = async (createMatchInfo: MatchPostNew) => {
   await api
     .post({
       url: '/matches',
-      data: matchInfo,
+      data: createMatchInfo,
     })
     .catch(throwErrorMessage);
 };
@@ -95,25 +81,6 @@ export const deleteMatchById = async (matchDeleteInfo: MatchDeleteInfo) => {
       data: token,
     })
     .catch(throwErrorMessage);
-};
-
-export const fetchAuthorizedTeams = async (token: string) => {
-  const { teamSimpleInfos } = await api
-    .get({
-      url: '/users/me/teams',
-      data: token,
-    })
-    .catch(throwErrorMessage);
-  return teamSimpleInfos;
-};
-
-export const fetchTotalMembers = async (teamId: number) => {
-  const { members } = await api
-    .get({
-      url: `/teams/${teamId}/total-members`,
-    })
-    .catch(throwErrorMessage);
-  return members;
 };
 
 export const applyMatch = async (matchApplyInfo: MatchApplyInfo) => {
@@ -168,4 +135,32 @@ export const modifyTeamMember = async (editedTeamMemberInfo: TeamMemberEdit) => 
       data: editedTeamMember,
     })
     .catch(throwErrorMessage);
+};
+
+export const fetchAuthorizedTeams = async (token: string) => {
+  const { teamSimpleInfos } = await api
+    .get({
+      url: '/users/me/teams',
+      data: token,
+    })
+    .catch(throwErrorMessage);
+  return teamSimpleInfos;
+};
+
+export const fetchTotalMembers = async (teamId: number) => {
+  const { members } = await api
+    .get({
+      url: `/teams/${teamId}/total-members`,
+    })
+    .catch(throwErrorMessage);
+  return members;
+};
+
+export const fetchLocation = async () => {
+  const data = await api
+    .get({
+      url: '/locations',
+    })
+    .catch(throwErrorMessage);
+  return data;
 };
