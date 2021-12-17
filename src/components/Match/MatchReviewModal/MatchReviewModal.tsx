@@ -1,58 +1,37 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import styles from './MatchReviewModal.module.scss';
 import { InputCheckBox } from '@/components';
-import { RootState } from '@/store';
-import { fetchTeamWithUser, match } from '@/store/match/match';
-import useMount from '@/hooks/useMount';
-import TagCheckBox from './TagCheckBox';
+import { match } from '@/store/match/match';
+import { TAG_OPTIONS, TagOptions } from '@/consts';
+import { postMatchReview } from '@/api';
+import { Match } from '@/types';
 
 const { modalBackground, modalContainer, showModal, modalName, buttonBox, submitButton } = styles;
 
-interface CheckboxOptions {
-  [key: string]: boolean;
-}
-
-interface TagOptions {
-  [skill: string]: CheckboxOptions;
-  good: CheckboxOptions;
-  bad: CheckboxOptions;
-}
-
-const tagOptions: TagOptions = {
-  skill: {
-    '발이 빨라요': false,
-    '두 개의 심장': false,
-    패스마스터: false,
-    '개인기가 화려해요': false,
-  },
-  good: { '매너가 좋아요': false, '뒤끝이 없어요': false, '시간약속을 잘 지켜요': false },
-  bad: { 거칠어요: false, 히드라: false, 폭력적이에요: false, 지각쟁이: false },
-};
-
 interface ModalState {
   showMatchReviewModal: boolean;
+  matchInfo: Match;
 }
 
-const MatchReviewModal = ({ showMatchReviewModal }: ModalState) => {
-  const dispatch = useDispatch();
-  useMount(() => {
-    dispatch(fetchTeamWithUser(parseInt(window.location.pathname.split('/')[3], 10)));
-  });
+const selectTagsLimit = 3;
 
-  const handleCloseModal = (e: any) => {
-    if (e.target.classList.contains('modalBackground')) {
+const MatchReviewModal = ({ showMatchReviewModal, matchInfo }: ModalState) => {
+  const matchId = parseInt(useParams<{ postId: string }>().postId, 10);
+  const dispatch = useDispatch();
+
+  const handleCloseModal = (e: React.MouseEvent<HTMLElement>) => {
+    if ((e.target as Element).classList.contains('modalBackground')) {
       dispatch(match.actions.toggleModal({ modalName: 'matchReview' }));
     }
   };
 
-  const { userTeams } = useSelector((store: RootState) => store.match).data;
+  const [selectedTags, setSelectedTags] = useState(TAG_OPTIONS);
 
-  const [selectedTags, setSelectedTags] = useState(tagOptions);
-
-  const handleOnChangeSelectedTags = (e: any, tagCategory: string) => {
-    const targetTag: string = e.target.value;
+  const handleOnChangeSelectedTags = (e: React.ChangeEvent<HTMLElement>, tagCategory: string) => {
+    const targetTag: string = (e.target as HTMLInputElement).value;
     const newSelectedTags: TagOptions = {
       skill: { ...selectedTags.skill },
       good: { ...selectedTags.good },
@@ -70,21 +49,29 @@ const MatchReviewModal = ({ showMatchReviewModal }: ModalState) => {
   };
 
   const onSubmit = () => {
-    const selectedSkillTags = Object.entries(selectedTags.skill).reduce((acc: string[], cur) => {
-      if (cur[1]) acc.push(cur[0]);
-      return acc;
+    const skillTags = Object.entries(selectedTags.skill);
+    const selectedSkillTags = skillTags.reduce((selected: string[], tag) => {
+      if (tag[1]) selected.push(tag[0]);
+      return selected;
     }, []);
-    const selectedGoodTags = Object.entries(selectedTags.good).reduce((acc: string[], cur) => {
-      if (cur[1]) acc.push(cur[0]);
-      return acc;
+    const goodTags = Object.entries(selectedTags.good);
+    const selectedGoodTags = goodTags.reduce((selected: string[], tag) => {
+      if (tag[1]) selected.push(tag[0]);
+      return selected;
     }, []);
-    const selectedBadTags = Object.entries(selectedTags.bad).reduce((acc: string[], cur) => {
-      if (cur[1]) acc.push(cur[0]);
-      return acc;
+    const badTags = Object.entries(selectedTags.bad);
+    const selectedBadTags = badTags.reduce((selected: string[], tag) => {
+      if (tag[1]) selected.push(tag[0]);
+      return selected;
     }, []);
     const totalSelectedTags = [...selectedSkillTags, ...selectedGoodTags, ...selectedBadTags];
-    console.log(totalSelectedTags);
-    // dispatch(match.actions.toggleModal({ modalName: 'matchApply' }));
+
+    // TODO: 매칭 평가 API 요청, 태그ID, 회원정보 대조해서 리뷰어/대상 체크
+    console.log({
+      matchId,
+      tags: totalSelectedTags,
+    });
+    // postMatchReview();
   };
 
   return (
@@ -99,20 +86,53 @@ const MatchReviewModal = ({ showMatchReviewModal }: ModalState) => {
         <div className={classNames(modalName)}>
           <h3>매칭 평가</h3>
         </div>
-        <TagCheckBox
-          labelName={`스킬 (${Object.values(selectedTags.skill).filter((tag) => tag).length}/3)`}
+        <InputCheckBox
+          labelName={`SKILL (${
+            Object.values(selectedTags.skill).filter((tag) => tag).length
+          }/${selectTagsLimit})`}
           options={selectedTags.skill}
           onChange={(e) => handleOnChangeSelectedTags(e, 'skill')}
+          styleProps={{
+            checkBoxWidth: 'fit-content',
+            checkBoxBorder: '0.2rem solid #c4c4c4',
+            checkBoxMargin: '0.4rem',
+            checkBoxBorderRadius: '20rem',
+            unCheckedBoxWidth: 'fit-content',
+            checkedBoxInputBackgroundColor: '#56ad79',
+            checkedBoxFontColor: '#fff',
+          }}
         />
-        <TagCheckBox
-          labelName={`굿 (${Object.values(selectedTags.good).filter((tag) => tag).length}/3)`}
+        <InputCheckBox
+          labelName={`GOOD (${
+            Object.values(selectedTags.good).filter((tag) => tag).length
+          }/${selectTagsLimit})`}
           options={selectedTags.good}
           onChange={(e) => handleOnChangeSelectedTags(e, 'good')}
+          styleProps={{
+            checkBoxWidth: 'fit-content',
+            checkBoxBorder: '0.2rem solid #c4c4c4',
+            checkBoxMargin: '0.4rem',
+            checkBoxBorderRadius: '20rem',
+            unCheckedBoxWidth: 'fit-content',
+            checkedBoxInputBackgroundColor: '#56ad79',
+            checkedBoxFontColor: '#fff',
+          }}
         />
-        <TagCheckBox
-          labelName={`배드 (${Object.values(selectedTags.bad).filter((tag) => tag).length}/3)`}
+        <InputCheckBox
+          labelName={`BAD (${
+            Object.values(selectedTags.bad).filter((tag) => tag).length
+          }/${selectTagsLimit})`}
           options={selectedTags.bad}
           onChange={(e) => handleOnChangeSelectedTags(e, 'bad')}
+          styleProps={{
+            checkBoxWidth: 'fit-content',
+            checkBoxBorder: '0.2rem solid #c4c4c4',
+            checkBoxMargin: '0.4rem',
+            checkBoxBorderRadius: '20rem',
+            unCheckedBoxWidth: 'fit-content',
+            checkedBoxInputBackgroundColor: '#56ad79',
+            checkedBoxFontColor: '#fff',
+          }}
         />
         <div className={classNames(buttonBox)}>
           <button className={classNames(submitButton)} type="button" onClick={onSubmit}>

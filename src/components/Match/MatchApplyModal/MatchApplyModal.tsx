@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import classNames from 'classnames';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import styles from './MatchApplyModal.module.scss';
 import { Input, InputCheckBox } from '@/components';
-import { RootState } from '@/store';
-import { fetchTeamWithUser, match } from '@/store/match/match';
-import useMount from '@/hooks/useMount';
+import { match } from '@/store/match/match';
+import { SPORTS_PLAYER } from '@/consts';
+import { fetchAuthorizedTeams, fetchTotalMembers, applyMatch } from '@/api';
+import { TeamSimple, TeamMemberInfo } from '@/types';
 
 const { modalBackground, modalContainer, showModal, modalName, buttonBox, submitButton } = styles;
 
@@ -18,79 +20,87 @@ interface ModalState {
   sports?: string;
 }
 
-interface SportsPlayers {
-  [key: string]: number;
-}
-
-const sportsPlayers: SportsPlayers = {
-  축구: 11,
-  풋살: 6,
-};
-
 const MatchApplyModal = ({ showMatchApplyModal, sports }: ModalState) => {
+  const matchId = parseInt(useParams<{ postId: string }>().postId, 10);
   const dispatch = useDispatch();
-  useMount(() => {
-    dispatch(fetchTeamWithUser(parseInt(window.location.pathname.split('/')[3], 10)));
-  });
 
-  const handleCloseModal = (e: any) => {
-    if (e.target.classList.contains('modalBackground')) {
+  const handleCloseModal = (e: React.MouseEvent<HTMLElement>) => {
+    if ((e.target as Element).classList.contains('modalBackground')) {
       dispatch(match.actions.toggleModal({ modalName: 'matchApply' }));
     }
   };
 
-  const { userTeams } = useSelector((store: RootState) => store.match).data;
+  const [userTeams, setUserTeams] = useState<TeamSimple[]>([]);
+
+  // 작성자(유저) 더미 데이터 이용
+  const tokenDummy = '1';
+
+  const getAuhorizedTeams = useCallback(async () => {
+    const authorizedTeams = await fetchAuthorizedTeams(tokenDummy);
+    setUserTeams(authorizedTeams);
+  }, []);
+
+  useEffect(() => {
+    getAuhorizedTeams();
+  }, []);
 
   const placeholder = '팀을 선택해주세요';
+  const userLimit = sports ? SPORTS_PLAYER[sports] : 0;
   const teamNames = userTeams.map((team) => team.teamName);
   const [selectedTeam, setSelectedTeam] = useState(placeholder);
-  const [teamMembers, setTeamMembers] = useState({});
-  const [userLimit, setUserLimit] = useState(sports ? sportsPlayers[sports] : 0);
+  const [teamMembersInfo, setTeamMembersInfo] = useState<TeamMemberInfo[]>([]);
+  const [teamMembers, setTeamMembers] = useState<CheckboxOptions>({});
 
-  const setSelectedTeamUsers = useCallback(() => {
-    const selectedTeamInfo = userTeams.filter((team) => team.teamName === selectedTeam)[0];
-    const selectedTeamUsers = selectedTeamInfo ? selectedTeamInfo.teamUsers : [];
-    const teamUsersOptions: CheckboxOptions = {};
-    selectedTeamUsers.forEach((user) => {
-      if (user.teamUserName) teamUsersOptions[user.teamUserName] = false;
-    });
-    return teamUsersOptions;
+  const getSelectedTeamMembers = useCallback(async () => {
+    const selectedTeamInfo = userTeams.filter((userTeam) => userTeam.teamName === selectedTeam)[0];
+    if (selectedTeamInfo) {
+      const selectedTeamId = selectedTeamInfo.teamId;
+      const selectedTeamUsers = await fetchTotalMembers(selectedTeamId);
+      setTeamMembersInfo(selectedTeamUsers);
+
+      const teamUsersOptions: CheckboxOptions = {};
+      selectedTeamUsers.forEach((user: TeamMemberInfo) => {
+        if (user.userName) teamUsersOptions[user.userName] = false;
+      });
+      setTeamMembers(teamUsersOptions);
+    }
   }, [selectedTeam, userTeams]);
 
-  const handleOnChangeTeams = (e: any) => {
-    setSelectedTeam(e.target.value);
+  const handleOnChangeTeams = (e: React.ChangeEvent<HTMLElement>) => {
+    setSelectedTeam((e.target as HTMLInputElement).value);
   };
 
-  const handleOnChangeTeamMembers = (e: any) => {
-    const target: string = e.target.value;
+  const handleOnChangeTeamMembers = (e: React.ChangeEvent<HTMLElement>) => {
+    const target: string = (e.target as HTMLInputElement).value;
     const newTeamMembers: CheckboxOptions = { ...teamMembers };
     newTeamMembers[target] = !newTeamMembers[target];
     setTeamMembers({ ...newTeamMembers });
   };
 
   useEffect(() => {
-    const newTeamUsers = setSelectedTeamUsers();
-    setTeamMembers({ ...newTeamUsers });
-  }, [setTeamMembers, setSelectedTeamUsers]);
+    getSelectedTeamMembers();
+  }, [getSelectedTeamMembers]);
 
   const onSubmit = () => {
     if (!selectedTeam || selectedTeam === placeholder) {
       window.alert('올바른 팀을 선택해주세요');
       return;
     }
+
     const selectedTeamWithUsers = {
-      teamId: userTeams.filter((team) => team.teamName === selectedTeam)[0].teamId,
-      players: Object.entries(teamMembers).reduce((acc: string[], cur) => {
-        if (cur[1]) acc.push(cur[0]);
-        return acc;
-      }, []),
+      teamId: userTeams.filter((userTeam) => userTeam.teamName === selectedTeam)[0].teamId,
+      players: teamMembersInfo
+        .filter((user) => user.userName && teamMembers[user.userName])
+        .map((user) => user.userId),
     };
     if (selectedTeamWithUsers.players.length !== userLimit) {
       window.alert('인원미달');
       return;
     }
-    console.log(selectedTeamWithUsers);
-    // dispatch(match.actions.toggleModal({ modalName: 'matchApply' }));
+
+    const requestData = { matchId, ...selectedTeamWithUsers };
+
+    applyMatch(requestData);
   };
 
   return (
@@ -101,10 +111,10 @@ const MatchApplyModal = ({ showMatchApplyModal, sports }: ModalState) => {
       onClick={handleCloseModal}
       role="presentation"
     >
-      <div className={classNames(modalName)}>
-        <h3>매칭팀 수락</h3>
-      </div>
       <div className={classNames(modalContainer)}>
+        <div className={classNames(modalName)}>
+          <h3>매칭 신청</h3>
+        </div>
         <Input
           inputId="input2"
           labelName="팀 선택"
@@ -119,6 +129,7 @@ const MatchApplyModal = ({ showMatchApplyModal, sports }: ModalState) => {
             }/${userLimit})`}
             options={teamMembers}
             onChange={handleOnChangeTeamMembers}
+            icon="far fa-check-square"
           />
         )}
         <div className={classNames(buttonBox)}>

@@ -2,42 +2,101 @@ import React from 'react';
 import classNames from 'classnames';
 import styles from './Input.module.scss';
 
+interface StyleProps {
+  [inputBoxWidth: string]: string | undefined;
+  inputNameWidth?: string;
+  inputNameFontColor?: string;
+  inputContentWidth?: string;
+  inputContentHeight?: string;
+  inputContentFontColor?: string;
+  inputContentBackgroundColor?: string;
+  inputContentCursor?: string;
+}
 interface Props {
-  labelName: string;
+  labelName?: string;
   inputId: string;
   type: 'text' | 'dropbox';
   placeholder?: string;
-  icon?: string;
   options?: string[];
   onChange: React.ChangeEventHandler<HTMLInputElement> &
     React.ChangeEventHandler<HTMLSelectElement>;
+  styleProps?: StyleProps;
+  value?: string | number;
+  disable?: boolean;
 }
 
-const { inputBox, inputName, inputContent, inputText, inputDropBox, inputButtonBox, inputButton } =
-  styles;
+const { inputBox, inputName, inputContent, inputText, inputDropBox } = styles;
 
-const ICON_COLLECTION = {
-  CHECK: 'fas fa-comment',
+const styleFormat: StyleProps = {
+  inputBoxWidth: '100%',
+  inputNameWidth: '100%',
+  inputNameFontColor: '#000',
+  inputContentWidth: '100%',
+  inputContentHeight: '100%',
+  inputContentFontColor: '#000',
+  inputContentBackgroundColor: '#fff',
+  inputContentCursor: 'auto',
 };
 
-const Input = ({ labelName, inputId, placeholder, type, icon, options, onChange }: Props) => {
-  ICON_COLLECTION.CHECK = icon || '';
+const Input = ({
+  labelName,
+  inputId,
+  placeholder,
+  type,
+  options,
+  onChange,
+  styleProps,
+  value,
+  disable,
+}: Props) => {
+  const defaultStyle = { ...styleFormat };
+
+  if (styleProps) {
+    Object.keys(styleProps).forEach((key) => {
+      defaultStyle[key] = styleProps[key];
+    });
+  }
+
+  const {
+    inputBoxWidth,
+    inputNameWidth,
+    inputNameFontColor,
+    inputContentWidth,
+    inputContentHeight,
+    inputContentFontColor,
+    inputContentBackgroundColor,
+    inputContentCursor,
+  } = defaultStyle;
+
   return (
-    <div className={classNames(inputBox)}>
-      <div className={classNames(inputName)}>
-        <label htmlFor={inputId}>{labelName}</label>
-      </div>
-      <div className={classNames(inputContent)}>
+    <div className={classNames(inputBox)} style={{ width: inputBoxWidth }}>
+      {labelName && (
+        <div
+          className={classNames(inputName)}
+          style={{ width: inputNameWidth, color: inputNameFontColor }}
+        >
+          <label htmlFor={inputId}>{labelName}</label>
+        </div>
+      )}
+      <div
+        className={classNames(inputContent)}
+        style={{ width: inputContentWidth, height: inputContentHeight }}
+      >
         {type === 'text' && (
           <div className={classNames(inputText)}>
-            <input id={inputId} type="text" placeholder={placeholder} onChange={onChange} />
-            {icon && (
-              <div className={classNames(inputButtonBox)}>
-                <button type="button" className={classNames(inputButton)}>
-                  <i className={classNames(ICON_COLLECTION.CHECK)} />
-                </button>
-              </div>
-            )}
+            <input
+              id={inputId}
+              type="text"
+              placeholder={placeholder}
+              onChange={onChange}
+              style={{
+                color: inputContentFontColor,
+                background: inputContentBackgroundColor,
+                cursor: inputContentCursor,
+              }}
+              value={value}
+              disabled={disable}
+            />
           </div>
         )}
         {type === 'dropbox' && (
@@ -46,6 +105,13 @@ const Input = ({ labelName, inputId, placeholder, type, icon, options, onChange 
             name={labelName}
             className={classNames(inputDropBox)}
             onChange={onChange}
+            style={{
+              color: inputContentFontColor,
+              background: inputContentBackgroundColor,
+              cursor: inputContentCursor,
+            }}
+            value={value}
+            disabled={disable}
           >
             {options?.map((option, index) => (
               <option value={option} key={`dropBoxOption${index}`}>

@@ -1,10 +1,10 @@
 import React from 'react';
 import classNames from 'classnames';
-import { PostItem } from '@/store/posts/posts';
+import { Match } from '@/types';
 import styles from './MatchInfo.module.scss';
 
 interface Props {
-  match: PostItem;
+  match: Match;
 }
 
 const { matchInfoCard, matchInfoRow, importantInfo, normalInfo, matchInfo, matchInfo_content } =
@@ -27,7 +27,7 @@ const MatchInfo = ({ match }: Props) => {
       <div className={classNames(matchInfoRow, importantInfo)}>
         <div className={classNames(matchInfo)}>
           <div className={classNames(matchInfo_content)}>
-            {`${match.city} ${match.region} ${match.groundName}`}
+            {`${match.city} ${match.region} ${match.ground}`}
           </div>
         </div>
       </div>
@@ -36,7 +36,7 @@ const MatchInfo = ({ match }: Props) => {
           <div className={classNames(matchInfo_content)}>{match.ageGroup}</div>
         </div>
         <div className={classNames(matchInfo)}>
-          <div className={classNames(matchInfo_content)}>{match.cost}</div>
+          <div className={classNames(matchInfo_content)}>{`${match.cost}원`}</div>
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useState } from 'react';
+import React, { ChangeEvent, FormEvent, useState, useEffect } from 'react';
 
 interface UseFormArgs<T> {
   initialValues: T;
@@ -11,9 +11,15 @@ const useForm = <T>({ initialValues, onSubmit, validate }: UseFormArgs<T>) => {
   const [errors, setErrors] = useState<T>(initialValues);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setValues({ ...values, [name]: value });
+  useEffect(() => {
+    const newError = validate(values);
+    setErrors(newError);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values]);
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { id, value } = e.target;
+    setValues({ ...values, [id]: value });
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -30,6 +36,7 @@ const useForm = <T>({ initialValues, onSubmit, validate }: UseFormArgs<T>) => {
 
   return {
     values,
+    setValues,
     errors,
     isLoading,
     handleChange,

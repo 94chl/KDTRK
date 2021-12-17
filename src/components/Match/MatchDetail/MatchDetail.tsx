@@ -1,12 +1,12 @@
 import React from 'react';
 import classNames from 'classnames';
-import { Link, useHistory } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import styles from './MatchDetail.module.scss';
-import { deleteMatchById, PostItem } from '@/store/posts/posts';
+import { deleteMatchById } from '@/api';
+import { Match } from '@/types';
 
 interface Props {
-  match: PostItem;
+  match: Match;
 }
 
 const {
@@ -20,15 +20,14 @@ const {
 } = styles;
 
 const MatchDetail = ({ match }: Props) => {
-  const dispatch = useDispatch();
   const history = useHistory();
-
+  const matchId = parseInt(useParams<{ postId: string }>().postId, 10);
+  // TODO: 유저 토큰
+  const token = '1';
   const handleRemoveMatch = () => {
-    const matchId = parseInt(window.location.pathname.split('/')[2], 10);
     if (window.confirm(`remove match${matchId}?`)) {
-      dispatch(deleteMatchById(matchId));
-      console.log(`${matchId} is REMOVED!`);
-      history.push('/matches/');
+      deleteMatchById({ matchId, token });
+      history.push('/matches');
     }
   };
 
