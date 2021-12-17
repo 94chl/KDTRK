@@ -7,7 +7,7 @@ export const store = configureStore({
   reducer: {
     posts: posts.reducer,
     match: match.reducer,
-    auth: authReducer,                    
+    auth: authReducer,
   },
 });
 

@@ -97,7 +97,7 @@ const Signup = () => {
     if (!isValidForm.nickname) {
       return;
     }
-    
+
     const { isduplicated } = await requestCheckDuplicatedNickname(signupForm.nickname);
 
     const msg = !isduplicated
@@ -135,7 +135,7 @@ const Signup = () => {
       email: isduplicated,
     });
   };
-      
+
   const IsSignupValid = () => {
     return !Object.values(isValidForm).includes(false);
   };
