@@ -6,7 +6,6 @@ import { useParams } from 'react-router-dom';
 import MatchDetail from '@/components/Match/MatchDetail/MatchDetail';
 import style from './hiresDetail.module.scss';
 import { RootState } from '@/store';
-import { match as matchReducer, fetchMatchById } from '@/store/match/match';
 import useMount from '@/hooks/useMount';
 
 const imageURL =
@@ -41,13 +40,6 @@ const {
 const HiresDetail = () => {
   const dispatch = useDispatch();
   const matchId = parseInt(useParams<{ postId: string }>().postId, 10);
-
-  const { match } = useSelector((store: RootState) => store.match.data);
-
-  useMount(() => {
-    dispatch(fetchMatchById(matchId));
-    dispatch(matchReducer.actions.setMatchId({ matchId }));
-  });
 
   const {
     date,
@@ -95,7 +87,6 @@ const HiresDetail = () => {
         </div>
       </article>
 
-      {match.length > 0 && <MatchDetail match={match[0]} />}
       <button type="button">신청 용병 확인</button>
     </>
   );
