@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef, ReactHTMLElement } from 'react';
 import TextField from '@mui/material/TextField';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import TimePicker from '@mui/lab/TimePicker';
@@ -15,6 +15,7 @@ import { RootState } from '@/store';
 import { match } from '@/store/match/match';
 import { SPORTS, SPORTS_PLAYER, AGE_GROUP } from '@/consts';
 import { TeamSimple, TeamMemberInfo, Locations } from '@/types';
+import { getItemFromStorage } from '@/utils/storage';
 
 const { newMatchContainer, inputLocationBox, inputDateBox, buttonBox, submitButton } = style;
 
@@ -41,7 +42,6 @@ const defaultGround = {
 
 const NewMatch = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
   const { locations } = useSelector((store: RootState) => store.match.data);
   const [locationInfo, setLocationInfo] = useState<Locations>(locations);
 
@@ -57,17 +57,11 @@ const NewMatch = () => {
     }
   }, []);
 
-  const [nowDate, setNowDate] = useState<Date>(new Date());
   const [formattedDate, setFormattedDate] = useState({
     startDate: new Date(),
     endDate: new Date(),
     startTime: new Date(),
     endTime: new Date(),
-  });
-  const [date, setDate] = useState({
-    date: '',
-    startTime: '',
-    endTime: '',
   });
 
   const placeholder = '선택';
@@ -77,7 +71,7 @@ const NewMatch = () => {
   const [region, setRegion] = useState(defaultRegion);
   const [ground, setGround] = useState(defaultGround);
   const [cost, setCost] = useState(0);
-  const [detail, setDetail] = useState(placeholder);
+  const [detail, setDetail] = useState('');
   const [team, setTeam] = useState(placeholder);
   const cityOptions = [
     '행정구역',
@@ -103,12 +97,14 @@ const NewMatch = () => {
 
   const [userTeams, setUserTeams] = useState<TeamSimple[]>([]);
 
-  // 작성자(유저) 더미 데이터 이용
-  const tokenDummy = '1';
+  const token = getItemFromStorage('accessToken');
 
   const getAuhorizedTeams = useCallback(async () => {
-    const authorizedTeams = await fetchAuthorizedTeams(tokenDummy);
-    setUserTeams(authorizedTeams);
+    if (token) {
+      const { teamSimpleInfos } = await fetchAuthorizedTeams();
+      setUserTeams(teamSimpleInfos);
+      dispatch(match.actions.setUserTeams({ userTeams: teamSimpleInfos }));
+    }
   }, []);
 
   useEffect(() => {
@@ -116,6 +112,7 @@ const NewMatch = () => {
   }, []);
 
   const userLimit = SPORTS_PLAYER[sports] || 0;
+
   const teamNames = userTeams.map((userTeam) => userTeam.teamName);
   const [teamMembersInfo, setTeamMembersInfo] = useState<TeamMemberInfo[]>([]);
   const [teamMembers, setTeamMembers] = useState<CheckboxOptions>({});
@@ -204,7 +201,6 @@ const NewMatch = () => {
 
   const handleChangeStartDate = (selectedDate: React.SetStateAction<Date | null>) => {
     const newDate = selectedDate ? new Date(selectedDate.toString()) : new Date();
-    setNowDate(newDate);
 
     const endTime = new Date(newDate.getTime() + 120 * 60000);
 
@@ -230,7 +226,45 @@ const NewMatch = () => {
     setFormattedDate({ ...formattedDate, endDate: newDate, endTime: newDate });
   };
 
-  const submitDate = () => {
+  const handleSubmitMatchInfo = async () => {
+    if (sports === placeholder) {
+      window.alert('종목을 선택해주세요');
+      return;
+    }
+    if (team === placeholder) {
+      window.alert('올바른 팀을 선택해주세요');
+      return;
+    }
+
+    const selectedTeamWithUsers = {
+      teamId: userTeams.filter((userTeam) => userTeam.teamName === team)[0].teamId,
+      players: teamMembersInfo
+        .filter((user) => user.userName && teamMembers[user.userName])
+        .map((user) => user.userId),
+    };
+
+    if (selectedTeamWithUsers.players.length < userLimit) {
+      window.alert('인원미달');
+      return;
+    }
+
+    if (ageGroup === placeholder) {
+      window.alert('연령대를 선택해주세요');
+      return;
+    }
+    if (city.cityId === 0) {
+      window.alert('행정구역을 선택해주세요');
+      return;
+    }
+    if (region.regionId === 0) {
+      window.alert('시/군/구를 선택해주세요');
+      return;
+    }
+    if (ground.groundId === 0) {
+      window.alert('구장을 선택해주세요');
+      return;
+    }
+
     const { startDate, endDate, startTime, endTime } = formattedDate;
 
     const dateResult = {
@@ -259,67 +293,26 @@ const NewMatch = () => {
 
     if (dateResult.date < todayString) {
       window.alert('오늘보다 이른 날짜는 선택할 수 없습니다');
-      return {};
+      return;
     }
     if (startDate > endDate) {
       window.alert('종료일자가 시작일자보다 빠를 수 없습니다');
-      return {};
+      return;
     }
     if (startTime > endTime) {
       window.alert('시작시간이 종료시간보다 빠를 수 없습니다');
-      return {};
-    }
-
-    setDate(dateResult);
-  };
-
-  const handleSubmitMatchInfo = () => {
-    if (sports === placeholder) {
-      window.alert('종목을 선택해주세요');
-      return;
-    }
-    if (team === placeholder) {
-      window.alert('올바른 팀을 선택해주세요');
       return;
     }
 
-    const selectedTeamWithUsers = {
-      teamId: userTeams.filter((userTeam) => userTeam.teamName === team)[0].teamId,
-      players: teamMembersInfo
-        .filter((user) => user.userName && teamMembers[user.userName])
-        .map((user) => user.userId),
-    };
-
-    submitDate();
-
-    if (selectedTeamWithUsers.players.length < userLimit) {
-      window.alert('인원미달');
-      return;
-    }
-
-    if (ageGroup === placeholder) {
-      window.alert('연령대를 선택해주세요');
-      return;
-    }
-    if (city.cityId === 0) {
-      window.alert('행정구역을 선택해주세요');
-      return;
-    }
-    if (region.regionId === 0) {
-      window.alert('시/군/구를 선택해주세요');
-      return;
-    }
-    if (ground.groundId === 0) {
-      window.alert('구장을 선택해주세요');
-      return;
-    }
     if (Number.isNaN(cost)) {
       window.alert('참가비는 숫자만 입력할 수 있습니다');
       return;
     }
 
     const requestData = {
-      ...date,
+      date: dateResult.date,
+      startTime: dateResult.startTime,
+      endTime: dateResult.endTime,
       registerTeamId: selectedTeamWithUsers.teamId,
       sports,
       ageGroup,
@@ -331,8 +324,8 @@ const NewMatch = () => {
       players: selectedTeamWithUsers.players,
     };
 
-    createMatch(requestData);
-    history.push('/matches/');
+    const newMatchId = await createMatch(requestData);
+    window.location.replace(`/matches/post/${newMatchId}`);
   };
 
   useEffect(() => {
@@ -360,6 +353,13 @@ const NewMatch = () => {
 
     getSelectedTeamMembers();
   }, [setTeamMembers, getSelectedTeamMembers, setFormattedDate]);
+
+  const detailRef = useRef<HTMLDivElement>(null);
+
+  const checkRef = () => {
+    console.log(detailRef);
+    console.log(detailRef.current?.innerHTML);
+  };
 
   return (
     <div className={classNames(newMatchContainer)}>
@@ -428,7 +428,7 @@ const NewMatch = () => {
         <div>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DatePicker
-              value={nowDate}
+              value={formattedDate.startDate}
               onChange={handleChangeStartDate}
               renderInput={(params) => <TextField {...params} />}
             />
@@ -449,6 +449,15 @@ const NewMatch = () => {
           </LocalizationProvider>
         </div>
       </div>
+      <div>
+        <div
+          style={{ border: '1px solid #000', minHeight: '250px' }}
+          contentEditable
+          dangerouslySetInnerHTML={{ __html: detail || '' }}
+          ref={detailRef}
+          className={classNames()}
+        />
+      </div>
       <Input
         inputId="inputCost"
         labelName="참가비"
@@ -462,8 +471,11 @@ const NewMatch = () => {
         onChange={(e) => handleDetail(e)}
       />
       <div className={classNames(buttonBox)}>
-        <button className={classNames(submitButton)} type="button" onClick={handleSubmitMatchInfo}>
+        {/* <button className={classNames(submitButton)} type="button" onClick={handleSubmitMatchInfo}>
           매칭 등록
+        </button> */}
+        <button className={classNames(submitButton)} type="button" onClick={checkRef}>
+          체크
         </button>
       </div>
     </div>

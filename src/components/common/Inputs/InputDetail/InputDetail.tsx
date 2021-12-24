@@ -14,8 +14,9 @@ interface StyleProps {
 interface Props {
   labelName: string;
   placeholder?: string;
-  onChange: Dispatch<React.SetStateAction<string>>;
+  onChange?: Dispatch<React.SetStateAction<string>>;
   styleProps?: StyleProps;
+  ref?: any;
 }
 
 const styleFormat: StyleProps = {
@@ -30,7 +31,7 @@ const styleFormat: StyleProps = {
 
 const { inputBox, inputName, inputContent, inputText, inputTextContent } = styles;
 
-const InputDetail = ({ labelName, placeholder, onChange, styleProps }: Props) => {
+const InputDetail = ({ ref, labelName, placeholder, onChange, styleProps }: Props) => {
   const defaultStyle = { ...styleFormat };
 
   if (styleProps) {
@@ -67,12 +68,14 @@ const InputDetail = ({ labelName, placeholder, onChange, styleProps }: Props) =>
             className={classNames(inputTextContent)}
             contentEditable
             placeholder={placeholder && placeholder}
-            onInput={(e: React.ChangeEvent<HTMLDivElement>) => onChange(e.target.innerHTML)}
+            // onInput={(e: React.ChangeEvent<HTMLDivElement>) => onChange(e.target.innerHTML)}
             style={{
               color: inputContentFontColor,
               background: inputContentBackgroundColor,
               cursor: inputContentCursor,
             }}
+            dangerouslySetInnerHTML={{ __html: placeholder || '' }}
+            ref={ref}
           />
         </div>
       </div>

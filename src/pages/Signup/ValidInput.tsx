@@ -1,27 +1,43 @@
+import classNames from 'classnames';
 import * as React from 'react';
 
 type ValidInputProps = {
   name: string;
+  id: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => void;
   value: string;
   selectOptions?: string[];
   type: 'input' | 'select';
-  validMsg: string;
+  className?: string;
 };
-export const ValidInput = ({
+
+const ValidInput = ({
   name,
+  id,
   onChange,
   value,
   selectOptions,
   type,
-  validMsg,
+  className,
 }: ValidInputProps) => {
   return (
     <>
       {type === 'input' ? (
-        <input name={name} onChange={onChange} value={value} />
+        <input
+          id={id}
+          name={name}
+          onChange={onChange}
+          value={value}
+          className={classNames(className)}
+        />
       ) : (
-        <select name={name} onChange={onChange} value={value}>
+        <select
+          id={id}
+          name={name}
+          onChange={onChange}
+          value={value}
+          className={classNames(className)}
+        >
           {selectOptions?.map((option) => {
             return (
               <option key={option} value={option}>
@@ -31,7 +47,6 @@ export const ValidInput = ({
           })}
         </select>
       )}
-      <div>{validMsg && <small>{validMsg}</small>}</div>
     </>
   );
 };
